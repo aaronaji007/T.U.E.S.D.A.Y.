@@ -1,7 +1,7 @@
-# AETHER-SOC System Architecture & Technical Specification
+# TUESDAY System Architecture & Technical Specification
 
 ## 1. System Overview
-**AETHER-SOC** (Autonomous Multi-Agent Security Operations Center Intelligence Platform) is a production-grade, collaborative multi-agent cybersecurity ecosystem. It autonomously ingests SIEM security alerts, decomposes investigation workflows across specialized intelligent agents, performs multi-source threat intelligence enrichment, generates root cause analysis, maps MITRE ATT&CK TTPs, and executes automated containment playbooks with human-in-the-loop governance.
+**TUESDAY** (Autonomous Multi-Agent Security Operations Center Intelligence Platform) is a production-grade, collaborative multi-agent cybersecurity ecosystem. It autonomously ingests SIEM security alerts, decomposes investigation workflows across specialized intelligent agents, performs multi-source threat intelligence enrichment, generates root cause analysis, maps MITRE ATT&CK TTPs, and executes automated containment playbooks with human-in-the-loop governance.
 
 ---
 

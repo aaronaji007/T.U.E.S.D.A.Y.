@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AETHER-SOC: Multi-Tier Agent Memory System
+   TUESDAY: Multi-Tier Agent Memory System
    Episodic Memory | Semantic Threat Memory | IOC Cache | Knowledge Base
    ========================================================================== */
 

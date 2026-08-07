@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AETHER // MATRIX SOC - Autonomous Intelligence Platform</title>
-    <meta name="description" content="Autonomous Multi-Agent Security Operations Center Platform with Matrix Cyber Intelligence UI.">
-    <!-- Google Fonts: Share Tech Mono, JetBrains Mono, Inter -->
+    <title>TUESDAY — Autonomous Multi-Agent SOC Platform</title>
+    <meta name="description" content="TUESDAY — Threat Unification Engine for Security Defense And Your SOC. Autonomous multi-agent security operations center.">
+    <!-- Google Fonts: Inter + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Matrix Cyber Icons -->
+    <!-- FontAwesome for UI Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js for SOC Metrics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -17,19 +17,16 @@
 </head>
 <body class="matrix-theme">
 
-    <!-- Matrix Digital Rain Graphic Canvas Background -->
-    <canvas id="matrix-bg-canvas"></canvas>
-
     <div class="matrix-app-container">
-        <!-- Top Matrix Header -->
+        <!-- Top Header -->
         <header class="matrix-navbar">
             <div class="nav-brand">
                 <div class="matrix-logo">
-                    <i class="fa-solid fa-terminal"></i>
+                    <i class="fa-solid fa-calendar-days"></i>
                 </div>
                 <div class="brand-text">
-                    <span class="brand-title">AETHER<span class="matrix-green">//SOC</span></span>
-                    <span class="brand-subtitle">AUTONOMOUS MULTI-AGENT SWARM v2.4</span>
+                    <span class="brand-title">TUESDAY</span>
+                    <span class="brand-subtitle">Threat Unification Engine · Security Defense And Your SOC</span>
                 </div>
             </div>
 
@@ -37,7 +34,7 @@
             <div class="matrix-telemetry">
                 <div class="telemetry-box">
                     <span class="lbl">SWARM STATUS</span>
-                    <span class="val green-glow"><i class="fa-solid fa-circle pulse"></i> 8 AGENTS ONLINE</span>
+                    <span class="val green-glow" id="val-swarm-status"><i class="fa-solid fa-circle pulse"></i> 8 AGENTS ONLINE</span>
                 </div>
                 <div class="telemetry-box">
                     <span class="lbl">INGESTED ALERTS</span>
@@ -55,11 +52,17 @@
 
             <!-- Header Action Controls -->
             <div class="header-actions">
+                <button class="btn btn-matrix-green pulse-btn" id="btn-showcase">
+                    <i class="fa-solid fa-graduation-cap"></i> <span id="lbl-showcase">SHOWCASE</span>
+                </button>
+                <button class="btn btn-matrix-outline" id="btn-toggle-audio">
+                    <i class="fa-solid fa-volume-high"></i> <span id="lbl-audio-status">AUDIO: ON</span>
+                </button>
                 <button class="btn btn-matrix-red pulse-btn" id="btn-trigger-attack">
                     <i class="fa-solid fa-bolt"></i> LAUNCH SIMULATOR
                 </button>
-                <button class="btn btn-matrix-outline" id="btn-ingest-custom">
-                    <i class="fa-solid fa-plus"></i> INGEST ALERT
+                <button class="btn btn-matrix-outline" id="btn-soar-rollback">
+                    <i class="fa-solid fa-rotate-left"></i> ROLLBACK SOAR
                 </button>
                 <button class="btn btn-matrix-green" id="btn-export-report">
                     <i class="fa-solid fa-file-code"></i> EXECUTIVE REPORT
@@ -76,7 +79,7 @@
                 <i class="fa-solid fa-sitemap"></i> AGENT SWARM <span class="badge badge-matrix-green" id="badge-agent-activity">8 ACTIVE</span>
             </button>
             <button class="tab-btn" data-tab="tab-twin">
-                <i class="fa-solid fa-network-wired"></i> DIGITAL SOC TWIN
+                <i class="fa-solid fa-network-wired"></i> DIGITAL SOC TWIN & PCAP
             </button>
             <button class="tab-btn" data-tab="tab-mitre">
                 <i class="fa-solid fa-cubes"></i> MITRE ATT&CK MATRIX
@@ -85,7 +88,7 @@
                 <i class="fa-solid fa-shield-halved"></i> HUMAN APPROVAL QUEUE <span class="badge badge-matrix-amber" id="badge-pending-approvals">0 PENDING</span>
             </button>
             <button class="tab-btn" data-tab="tab-memory">
-                <i class="fa-solid fa-brain"></i> AGENT MEMORY
+                <i class="fa-solid fa-brain"></i> AGENT MEMORY & RULE EDITOR
             </button>
             <button class="tab-btn" data-tab="tab-simulator">
                 <i class="fa-solid fa-vial"></i> PURPLE TEAM SIM
@@ -108,8 +111,8 @@
                         <p id="threat-desc">Multi-agent orchestrator actively scanning SIEM feeds, cloud logs, and endpoint telemetry.</p>
                         <div class="banner-tags" id="threat-tags">
                             <span class="matrix-pill">SIEM: CONNECTED</span>
-                            <span class="matrix-pill">APIs: ONLINE</span>
                             <span class="matrix-pill">PLAYBOOKS: READY</span>
+                            <span class="matrix-pill" id="pill-engine">ENGINE: INITIALIZING</span>
                         </div>
                     </div>
                     <div class="banner-metrics">
@@ -124,10 +127,26 @@
                     </div>
                 </div>
 
-                <!-- Clean 2-Column Uncluttered Main Grid -->
+                <!-- Slim Simulation Toolbar -->
+                <div class="sim-toolbar">
+                    <div class="sim-toolbar-group">
+                        <span class="sim-toolbar-label"><i class="fa-solid fa-sliders"></i> SIMULATION</span>
+                        <button class="btn btn-matrix-green btn-sm" id="btn-sim-play"><i class="fa-solid fa-play"></i> PLAY</button>
+                        <button class="btn btn-matrix-outline btn-sm" id="btn-sim-pause"><i class="fa-solid fa-pause"></i> PAUSE</button>
+                        <button class="btn btn-matrix-outline btn-sm" id="btn-sim-step"><i class="fa-solid fa-forward-step"></i> STEP</button>
+                    </div>
+                    <div class="sim-toolbar-group">
+                        <span class="text-muted">SPEED</span>
+                        <button class="btn btn-matrix-outline btn-sm btn-speed active" data-speed="1">1x</button>
+                        <button class="btn btn-matrix-outline btn-sm btn-speed" data-speed="2">2x</button>
+                        <button class="btn btn-matrix-outline btn-sm btn-speed" data-speed="5">5x</button>
+                    </div>
+                </div>
+
+                <!-- Clean 2-Column Main Grid -->
                 <div class="matrix-main-grid">
                     
-                    <!-- Left Column: Live SIEM Ingestion Stream (35% width) -->
+                    <!-- Left Column: Live SIEM Ingestion Stream -->
                     <div class="matrix-card">
                         <div class="card-header">
                             <h3><i class="fa-solid fa-list-ol"></i> SIEM INGESTION STREAM</h3>
@@ -138,7 +157,7 @@
                         </div>
                     </div>
 
-                    <!-- Right Column: Agent Reasoning Graph & Live Matrix Bus Terminal (65% width) -->
+                    <!-- Right Column: Agent Reasoning Graph & Agent Bus Terminal -->
                     <div class="matrix-card">
                         <div class="card-header">
                             <h3><i class="fa-solid fa-diagram-project"></i> REAL-TIME AGENT REASONING GRAPH</h3>
@@ -199,14 +218,14 @@
                                 </div>
                             </div>
 
-                            <!-- Matrix Green Terminal Log Output -->
+                            <!-- Agent Inter-Communication Bus Terminal -->
                             <div class="matrix-terminal">
                                 <div class="terminal-header">
                                     <span>>_ AGENT INTER-COMMUNICATION BUS</span>
                                     <span class="terminal-badge" id="terminal-step">Step 0/0</span>
                                 </div>
                                 <div class="terminal-body scrollable" id="agent-bus-logs">
-                                    <div class="log-line text-muted">[00:00:00] MATRIX SOC Engine Initialized. Listening on event telemetry bus...</div>
+                                    <div class="log-line text-muted">[00:00:00] TUESDAY engine online. Listening on telemetry bus...</div>
                                 </div>
                             </div>
 
@@ -215,20 +234,20 @@
 
                 </div>
 
-                <!-- Metrics Row: Chart + Containment + IOC Search -->
-                <div class="metrics-row">
-                    <div class="matrix-card" style="flex:1;">
+                <!-- Unified Metrics Panel: Distribution | Consensus | IOC -->
+                <div class="matrix-card panel-split">
+                    <div class="panel-section">
                         <div class="card-header">
                             <h3><i class="fa-solid fa-chart-pie"></i> INCIDENT DISTRIBUTION</h3>
                         </div>
                         <div class="card-body">
-                            <div class="chart-container">
+                            <div class="chart-container" style="height:210px;">
                                 <canvas id="chart-incident-types"></canvas>
                             </div>
                         </div>
                     </div>
 
-                    <div class="matrix-card" style="flex:1;">
+                    <div class="panel-section">
                         <div class="card-header">
                             <h3><i class="fa-solid fa-gavel"></i> CONSENSUS & CONFIDENCE</h3>
                         </div>
@@ -237,7 +256,7 @@
                         </div>
                     </div>
 
-                    <div class="matrix-card" style="flex:1;">
+                    <div class="panel-section">
                         <div class="card-header">
                             <h3><i class="fa-solid fa-magnifying-glass"></i> IOC LOOKUP</h3>
                         </div>
@@ -248,25 +267,25 @@
                     </div>
                 </div>
 
-                <!-- Threat Prediction + Playbook Generator Row -->
-                <div class="metrics-row" style="margin-top:1.25rem;">
-                    <div class="matrix-card" style="flex:1;">
+                <!-- Unified Intelligence Panel: Prediction | Playbook -->
+                <div class="matrix-card panel-split panel-split-2">
+                    <div class="panel-section">
                         <div class="card-header">
                             <h3><i class="fa-solid fa-crystal-ball"></i> THREAT PREDICTION ENGINE</h3>
                             <span class="matrix-pill">BONUS: AI-POWERED</span>
                         </div>
                         <div class="card-body" id="prediction-panel">
-                            <div class="empty-state">Predictions will appear after running an attack simulation. The engine analyzes kill chain progression to anticipate the adversary's next move.</div>
+                            <div class="empty-state">Predictions will appear after running an attack simulation.</div>
                         </div>
                     </div>
 
-                    <div class="matrix-card" style="flex:1;">
+                    <div class="panel-section">
                         <div class="card-header">
                             <h3><i class="fa-solid fa-wand-magic-sparkles"></i> AUTONOMOUS PLAYBOOK GENERATOR</h3>
                             <span class="matrix-pill">BONUS: SELF-LEARNING</span>
                         </div>
                         <div class="card-body" id="playbook-panel">
-                            <div class="empty-state">Playbooks are auto-generated from incident patterns and past episodic memory. Run a simulation to see adaptive playbook synthesis.</div>
+                            <div class="empty-state">Playbooks are auto-generated from incident patterns and past episodic memory.</div>
                         </div>
                     </div>
                 </div>
@@ -288,13 +307,13 @@
                 </div>
             </section>
 
-            <!-- ================= TAB 3: DIGITAL SOC TWIN ================= -->
+            <!-- ================= TAB 3: DIGITAL SOC TWIN & PCAP ================= -->
             <section id="tab-twin" class="tab-content">
                 <div class="twin-layout">
                     <div class="twin-header-bar">
                         <div class="twin-title">
-                            <h2><i class="fa-solid fa-network-wired"></i> DIGITAL SOC TWIN & ENCLAVE TOPOLOGY</h2>
-                            <p>Real-time Matrix topology showing host states, active network flows, isolated endpoints, and threat vectors.</p>
+                            <h2><i class="fa-solid fa-network-wired"></i> DIGITAL SOC TWIN & PCAP PACKET INSPECTOR</h2>
+                            <p>Real-time SOC topology showing host states, active network flows, isolated endpoints, and live Wireshark-style PCAP telemetry.</p>
                         </div>
                         <div class="twin-controls">
                             <button class="btn btn-matrix-outline" id="btn-twin-reset-view"><i class="fa-solid fa-arrows-rotate"></i> Reset View</button>
@@ -313,6 +332,17 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Live PCAP WireShark Packet Terminal -->
+                    <div class="matrix-card" style="margin-top:1rem;">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-ethernet"></i> LIVE PCAP WIRESHARK PACKET INSPECTOR</h3>
+                            <span class="matrix-indicator active">STREAMING</span>
+                        </div>
+                        <div class="card-body scrollable" style="max-height:220px; font-family:var(--font-mono); font-size:0.72rem;" id="pcap-packet-stream">
+                            <div class="empty-state">Run an attack simulation to capture live network packets.</div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -320,7 +350,7 @@
             <section id="tab-mitre" class="tab-content">
                 <div class="matrix-card" style="margin-bottom:1.25rem;">
                     <div class="card-header">
-                        <h3><i class="fa-solid fa-cubes"></i> MITRE ATT&CK THREAT HEATMAP</h3>
+                        <h3><i class="fa-solid fa-cubes"></i> MITRE ATT&CK THREAT HEATMAP (CLICK TTP FOR DETAILS)</h3>
                         <span class="matrix-pill red" id="mitre-active-ttp-count">0 Active TTPs</span>
                     </div>
                     <div class="card-body scrollable">
@@ -337,7 +367,7 @@
                             <h3><i class="fa-solid fa-timeline"></i> ROOT CAUSE ANALYSIS TIMELINE</h3>
                         </div>
                         <div class="card-body scrollable" id="rca-timeline-container">
-                            <div class="empty-state">No active incident under root cause analysis. Launch an attack simulation to view autonomous RCA generation by the multi-agent swarm.</div>
+                            <div class="empty-state">No active incident under root cause analysis.</div>
                         </div>
                     </div>
 
@@ -357,7 +387,7 @@
                                 <div class="kc-step" data-kc="Exfiltration / Impact">7. Impact / Exfil</div>
                             </div>
                             <div class="kc-details" id="killchain-details-box" style="margin-top:1rem; font-size:0.8rem; color:var(--text-muted);">
-                                Select a kill chain stage or run a simulation to see detected attack progression with evidence.
+                                Select a kill chain stage to see detected attack progression.
                             </div>
                         </div>
                     </div>
@@ -397,18 +427,19 @@
                 </div>
             </section>
 
-            <!-- ================= TAB 6: AGENT MEMORY ================= -->
+            <!-- ================= TAB 6: AGENT MEMORY & RULE EDITOR ================= -->
             <section id="tab-memory" class="tab-content">
                 <div class="matrix-main-grid">
                     <div class="matrix-card col-4">
                         <div class="card-header">
-                            <h3><i class="fa-solid fa-brain"></i> MEMORY TIERS</h3>
+                            <h3><i class="fa-solid fa-brain"></i> MEMORY TIERS & SANDBOX</h3>
                         </div>
                         <div class="card-body">
                             <ul class="memory-nav">
                                 <li class="memory-tab active" data-mem="episodic"><i class="fa-solid fa-clock-rotate-left"></i> Episodic Memory (Incidents)</li>
                                 <li class="memory-tab" data-mem="semantic"><i class="fa-solid fa-network-wired"></i> Semantic Memory (Asset Graph)</li>
                                 <li class="memory-tab" data-mem="rules"><i class="fa-solid fa-code"></i> YARA & Sigma Rules</li>
+                                <li class="memory-tab" data-mem="editor"><i class="fa-solid fa-pen-to-square"></i> Live Rule Sandbox Editor</li>
                             </ul>
                         </div>
                     </div>
@@ -419,7 +450,7 @@
                             <span class="matrix-pill" id="memory-count-badge">5 Incident Memories</span>
                         </div>
                         <div class="card-body scrollable" id="memory-view-body">
-                            <!-- Injected via memory.js -->
+                            <!-- Injected via memory.js / app.js -->
                         </div>
                     </div>
                 </div>
@@ -532,43 +563,7 @@
     <script src="agents.js"></script>
     <script src="attack_sim.js"></script>
     <script src="app.js"></script>
-    
-    <!-- Matrix Rain Background Graphic Generator -->
-    <script>
-        const canvas = document.getElementById('matrix-bg-canvas');
-        const ctx = canvas.getContext('2d');
+    <script src="showcase.js"></script>
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'.split('');
-        const fontSize = 14;
-        const columns = Math.floor(canvas.width / fontSize);
-        const drops = Array(columns).fill(1);
-
-        function drawMatrixRain() {
-            ctx.fillStyle = 'rgba(2, 8, 4, 0.08)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = 'rgba(0, 255, 102, 0.35)';
-            ctx.font = fontSize + 'px "Share Tech Mono", monospace';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = chars[Math.floor(Math.random() * chars.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
-        }
-
-        setInterval(drawMatrixRain, 45);
-    </script>
 </body>
 </html>

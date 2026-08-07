@@ -1,11 +1,16 @@
 /* ==========================================================================
-   AETHER // MATRIX SOC: Main Application Controller v2
-   Wires up all UI panels, consensus voting, RCA timeline, Kill Chain,
-   IOC Search, Threat Predictions, Playbook Generator, SVG Agent Lines,
-   Enhanced Terminal Formatting, and Metrics Chart.
+   TUESDAY: Main Application Controller v3
+   Wires up all 7 New Ultra Features:
+   1. AudioEngine (Web Speech synthesis & Synth Beep FX)
+   2. Simulation Stepper Controls (Play, Pause, Step, Speed 1x/2x/5x)
+   3. SOAR Rollback / Undo Containment
+   4. Live Wireshark PCAP Packet Inspector Stream
+   5. Clickable MITRE TTP Detail Modals
+   6. Live YARA & Sigma Rule Sandbox Editor
+   7. Agent Reinforcement Learning Feedback Loop (Thumbs Up/Down)
    ========================================================================== */
 
-class AetherSOCApp {
+class TuesdayApp {
     constructor() {
         this.activeAlerts = [];
         this.approvalQueue = [];
@@ -13,6 +18,10 @@ class AetherSOCApp {
         this.selectedAgentKey = 'coordinator';
         this.chartInstance = null;
         this.autoThreshold = 80;
+
+        // Stepper State
+        this.simPaused = false;
+        this.simSpeed = 1;
 
         this.initUI();
     }
@@ -32,22 +41,22 @@ class AetherSOCApp {
         this.bindIOCSearch();
         this.bindSliderThreshold();
         this.bindKillChainClicks();
+        this.bindAudioToggle();
+        this.bindStepperControls();
+        this.bindRollbackAction();
         MitreEngine.renderMatrix('mitre-matrix-container');
 
-        // Bind Agent Bus Logs (enhanced formatting)
+        // Bind Agent Bus Logs with Sound FX + Speech
         SwarmEngine.onLogMessage((agentKey, logText, type) => {
             this.appendTerminalLog(agentKey, logText, type);
             this.pulseAgentNode(agentKey);
             this.pulseAgentSVGLine(agentKey);
-        });
 
-        // Agent node clicks → swarm tab
-        document.querySelectorAll('.agent-node').forEach(node => {
-            node.addEventListener('click', () => {
-                const key = node.getAttribute('data-agent');
-                document.querySelector('[data-tab="tab-swarm"]')?.click();
-                this.renderAgentDetails(key);
-            });
+            if (type === 'danger') {
+                AudioEngine.playAlertSound();
+            } else if (type === 'success') {
+                AudioEngine.playSuccessSound();
+            }
         });
 
         // Header Buttons
@@ -96,12 +105,102 @@ class AetherSOCApp {
             });
         });
 
-        // Seed initial alerts
         this.seedInitialAlerts();
+        this.initBackendStatus();
     }
 
     // =====================================================
-    // TAB NAVIGATION
+    // BACKEND STATUS + PERSISTED MEMORY SYNC
+    // =====================================================
+    async initBackendStatus() {
+        await window.TuesdayBackend.refresh(true);
+        const st = window.TuesdayBackend.status;
+        const pill = document.getElementById('pill-engine');
+        const swarmStatus = document.getElementById('val-swarm-status');
+
+        if (st.ok) {
+            const label = st.engine === 'llm' ? `LLM AGENTIC: ${st.model}` : 'RULE ENGINE (Ollama offline)';
+            if (pill) { pill.innerText = `ENGINE: ${label}`; pill.className = st.engine === 'llm' ? 'matrix-pill' : 'matrix-pill badge-matrix-amber'; }
+            if (swarmStatus) swarmStatus.innerHTML = `<i class="fa-solid fa-circle pulse"></i> ${label}`;
+
+            try {
+                const mem = await fetch('/api/memory').then(r => r.json());
+                if (mem.episodicMemory && mem.episodicMemory.length) {
+                    SOCMemory.episodicMemory = mem.episodicMemory;
+                }
+                this.renderMemoryView('episodic');
+            } catch (e) { /* fall back to seeded memory */ }
+        } else {
+            if (pill) { pill.innerText = 'ENGINE: STATIC FALLBACK'; pill.className = 'matrix-pill badge-matrix-amber'; }
+            if (swarmStatus) swarmStatus.innerHTML = '<i class="fa-solid fa-circle pulse"></i> 8 AGENTS ONLINE (STATIC)';
+        }
+    }
+
+    // =====================================================
+    // 1. AUDIO SYNTHESIS & VOICE TOGGLE
+    // =====================================================
+    bindAudioToggle() {
+        const btn = document.getElementById('btn-toggle-audio');
+        const lbl = document.getElementById('lbl-audio-status');
+        if (!btn || !lbl) return;
+
+        btn.addEventListener('click', () => {
+            const enabled = AudioEngine.toggleAudio();
+            lbl.innerText = enabled ? 'AUDIO: ON' : 'AUDIO: OFF';
+            btn.className = enabled ? 'btn btn-matrix-green' : 'btn btn-matrix-outline';
+        });
+    }
+
+    // =====================================================
+    // 2. STEPPER CONTROLS (PLAY / PAUSE / STEP / SPEED)
+    // =====================================================
+    bindStepperControls() {
+        const btnPlay = document.getElementById('btn-sim-play');
+        const btnPause = document.getElementById('btn-sim-pause');
+        const btnStep = document.getElementById('btn-sim-step');
+
+        btnPlay?.addEventListener('click', () => {
+            this.simPaused = false;
+            btnPlay.className = 'btn btn-matrix-green btn-sm';
+            btnPause.className = 'btn btn-matrix-outline btn-sm';
+        });
+
+        btnPause?.addEventListener('click', () => {
+            this.simPaused = true;
+            btnPause.className = 'btn btn-matrix-red btn-sm';
+            btnPlay.className = 'btn btn-matrix-outline btn-sm';
+        });
+
+        document.querySelectorAll('.btn-speed').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.btn-speed').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.simSpeed = parseInt(btn.getAttribute('data-speed'));
+            });
+        });
+    }
+
+    // =====================================================
+    // 3. SOAR ROLLBACK / CONTAINMENT UNDO ACTION
+    // =====================================================
+    bindRollbackAction() {
+        const btn = document.getElementById('btn-soar-rollback');
+        if (!btn) return;
+
+        btn.addEventListener('click', () => {
+            if (window.SOCTwinInstance) {
+                window.SOCTwinInstance.resetTopology();
+            }
+
+            MitreEngine.clearTTPs();
+            this.addAuditLog('SOAR_ROLLBACK', 'Undid host network isolation and unblocked perimeter firewall IP.');
+            SwarmEngine.emitLog('response', 'SOAR ROLLBACK EXECUTED: Host network interfaces restored. Firewall rules unblocked.', 'warning');
+            AudioEngine.speak("SOAR containment rollback executed. All network policies reverted.");
+        });
+    }
+
+    // =====================================================
+    // 4. TAB NAVIGATION
     // =====================================================
     bindTabNavigation() {
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -123,7 +222,7 @@ class AetherSOCApp {
     }
 
     // =====================================================
-    // SVG CONNECTIONS BETWEEN AGENT NODES
+    // SVG AGENT CONNECTION LINES
     // =====================================================
     drawAgentSVGConnections() {
         const svg = document.getElementById('swarm-svg-connections');
@@ -154,7 +253,6 @@ class AetherSOCApp {
             };
         };
 
-        // Delay to let DOM settle
         setTimeout(() => {
             svg.innerHTML = '';
             connections.forEach(([from, to]) => {
@@ -220,7 +318,7 @@ class AetherSOCApp {
     }
 
     // =====================================================
-    // HANDLE INCOMING ALERT — Full Pipeline Trigger
+    // HANDLE INCOMING ALERT — Full Pipeline & Voice Announce
     // =====================================================
     async handleIncomingAlert(alert) {
         const banner = document.getElementById('active-threat-banner');
@@ -236,28 +334,69 @@ class AetherSOCApp {
             scoreEl.style.color = '#ff3b3b';
         }
 
+        AudioEngine.speak(`Critical security threat detected. ${alert.title}. Initiating multi-agent investigation.`);
         this.addAuditLog('ALERT_INGEST', `SIEM alert [${alert.id}] received from ${alert.source} targeting ${alert.targetHost}.`);
 
-        // Execute full agent swarm pipeline
         const result = await SwarmEngine.processIncidentAlert(alert);
 
-        // Update top metrics
         if (scoreEl) scoreEl.innerText = `${result.riskScore}/100`;
         const countEl = document.getElementById('top-metric-alerts');
         if (countEl) countEl.innerText = (parseInt(countEl.innerText.replace(',', '')) + 1).toLocaleString();
         const latEl = document.getElementById('top-metric-latency');
         if (latEl) latEl.innerText = `${result.latencySec}s`;
 
-        // Render all new panels
         this.renderConsensusPanel(result);
         this.renderRCATimeline();
         this.renderKillChain();
         this.renderPredictions();
         this.renderPlaybook();
+        this.renderPCAPPackets(alert);
+
+        if (result.status === 'CONTAINED') {
+            AudioEngine.speak(`Autonomous containment executed successfully in ${result.latencySec} seconds with 100 percent agent consensus.`);
+        }
     }
 
     // =====================================================
-    // CONSENSUS PANEL — Agent Voting & Confidence
+    // PCAP WIRESHARK PACKET STREAM
+    // =====================================================
+    renderPCAPPackets(alert) {
+        const stream = document.getElementById('pcap-packet-stream');
+        if (!stream) return;
+
+        const packets = PCAPEngine.generatePacketsForAlert(alert);
+        let html = `
+            <table style="width:100%; border-collapse:collapse; text-align:left;">
+                <thead>
+                    <tr style="color:var(--matrix-green); border-bottom:1px solid var(--matrix-card-border);">
+                        <th style="padding:0.3rem;">No.</th>
+                        <th style="padding:0.3rem;">Time</th>
+                        <th style="padding:0.3rem;">Source</th>
+                        <th style="padding:0.3rem;">Destination</th>
+                        <th style="padding:0.3rem;">Protocol</th>
+                        <th style="padding:0.3rem;">Info</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+        packets.forEach(p => {
+            html += `
+                <tr style="border-bottom:1px solid rgba(0,255,102,0.1);">
+                    <td style="padding:0.3rem; color:var(--text-muted);">${p.id}</td>
+                    <td style="padding:0.3rem; color:var(--matrix-cyan);">${p.time}</td>
+                    <td style="padding:0.3rem;">${p.src}</td>
+                    <td style="padding:0.3rem;">${p.dst}</td>
+                    <td style="padding:0.3rem;"><span class="badge badge-matrix-purple">${p.proto}</span></td>
+                    <td style="padding:0.3rem; color:var(--text-main);">${p.info}</td>
+                </tr>`;
+        });
+
+        html += '</tbody></table>';
+        stream.innerHTML = html;
+    }
+
+    // =====================================================
+    // CONSENSUS PANEL
     // =====================================================
     renderConsensusPanel(result) {
         const panel = document.getElementById('consensus-panel');
@@ -286,7 +425,7 @@ class AetherSOCApp {
     }
 
     // =====================================================
-    // RCA TIMELINE — Root Cause Analysis Visualization
+    // RCA TIMELINE
     // =====================================================
     renderRCATimeline() {
         const container = document.getElementById('rca-timeline-container');
@@ -311,7 +450,7 @@ class AetherSOCApp {
     }
 
     // =====================================================
-    // KILL CHAIN STEPPER — Attack Progression Stages
+    // KILL CHAIN STEPPER
     // =====================================================
     renderKillChain() {
         document.querySelectorAll('#killchain-stepper .kc-step').forEach(step => {
@@ -345,7 +484,7 @@ class AetherSOCApp {
     }
 
     // =====================================================
-    // THREAT PREDICTION PANEL (Bonus Feature)
+    // THREAT PREDICTION PANEL
     // =====================================================
     renderPredictions() {
         const panel = document.getElementById('prediction-panel');
@@ -375,7 +514,7 @@ class AetherSOCApp {
     }
 
     // =====================================================
-    // AUTONOMOUS PLAYBOOK GENERATOR PANEL (Bonus Feature)
+    // AUTONOMOUS PLAYBOOK GENERATOR PANEL
     // =====================================================
     renderPlaybook() {
         const panel = document.getElementById('playbook-panel');
@@ -392,11 +531,11 @@ class AetherSOCApp {
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
                     <div>
                         <div style="font-size:0.9rem;font-weight:700;color:var(--matrix-green);">${pb.name}</div>
-                        <div style="font-size:0.7rem;color:var(--text-muted);">Generated: ${pb.generatedAt} | Based on: ${pb.basedOn} | Confidence: ${pb.confidence}%</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted);">Generated: ${pb.generatedAt} | Based on: ${pb.basedOn}</div>
                     </div>
                 </div>`;
 
-        pb.steps.forEach((step, i) => {
+        pb.steps.forEach(step => {
             html += `<div class="playbook-step">${step}</div>`;
         });
 
@@ -405,7 +544,7 @@ class AetherSOCApp {
     }
 
     // =====================================================
-    // ENHANCED TERMINAL LOG — Color-coded + IOC highlights
+    // ENHANCED TERMINAL LOG
     // =====================================================
     appendTerminalLog(agentKey, logText, type) {
         const bus = document.getElementById('agent-bus-logs');
@@ -420,7 +559,6 @@ class AetherSOCApp {
         if (type === 'success') severityClass = 'severity-success';
         line.className = `log-line ${severityClass}`;
 
-        // Highlight IPs and hashes inline
         let text = logText.replace(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/g, '<span class="log-ioc-highlight">$1</span>');
         text = text.replace(/(T\d{4}(?:\.\d{3})?)/g, '<span class="log-ioc-highlight">$1</span>');
 
@@ -430,7 +568,7 @@ class AetherSOCApp {
     }
 
     // =====================================================
-    // IOC SEARCH BAR — Quick Threat Intelligence Lookup
+    // IOC SEARCH BAR
     // =====================================================
     bindIOCSearch() {
         const input = document.getElementById('ioc-search-input');
@@ -452,16 +590,16 @@ class AetherSOCApp {
                 <div class="ioc-result-card">
                     <div style="font-size:0.8rem;font-weight:700;color:var(--matrix-green);margin-bottom:0.4rem;">IOC: ${query}</div>
                     <div style="font-size:0.75rem;color:var(--text-muted);">
-                        <strong>VirusTotal:</strong> ${vt.positives}/${vt.total} detections | Rep: ${vt.reputation} | AS: ${vt.as_owner}<br>
-                        <strong>AbuseIPDB:</strong> ${abuse.abuseConfidenceScore}% confidence | ${abuse.totalReports} reports | Country: ${abuse.countryCode}<br>
-                        <strong>Shodan:</strong> Ports: [${shodan.ports.join(', ')}] | Tags: [${shodan.tags.join(', ')}] | CVEs: ${shodan.openVulnerabilities.length > 0 ? shodan.openVulnerabilities.join(', ') : 'None'}
+                        <strong>VirusTotal:</strong> ${vt.positives}/${vt.total} detections | Rep: ${vt.reputation}<br>
+                        <strong>AbuseIPDB:</strong> ${abuse.abuseConfidenceScore}% confidence | ${abuse.totalReports} reports<br>
+                        <strong>Shodan:</strong> Ports: [${shodan.ports.join(', ')}] | Tags: [${shodan.tags.join(', ')}]
                     </div>
                 </div>`;
         });
     }
 
     // =====================================================
-    // SLIDER THRESHOLD — Actually Controls Agent Logic
+    // SLIDER THRESHOLD
     // =====================================================
     bindSliderThreshold() {
         const slider = document.getElementById('slider-auto-threshold');
@@ -475,7 +613,7 @@ class AetherSOCApp {
     }
 
     // =====================================================
-    // AGENT SWARM SIDEBAR & DETAIL PANELS
+    // AGENT DETAILS & REINFORCEMENT FEEDBACK LOOP
     // =====================================================
     renderAgentSidebar() {
         const container = document.getElementById('agent-selector-list');
@@ -532,6 +670,15 @@ class AetherSOCApp {
                 </div>
             </div>
 
+            <!-- REINFORCEMENT LEARNING FEEDBACK BUTTONS -->
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,15,7,0.7); border:1px solid var(--matrix-card-border); padding:0.6rem 1rem; border-radius:6px; margin-bottom:1rem;">
+                <div style="font-size:0.78rem;"><strong>REINFORCEMENT LEARNING FEEDBACK:</strong> Rate this agent's reasoning accuracy:</div>
+                <div style="display:flex; gap:0.5rem;">
+                    <button class="btn btn-matrix-green btn-sm btn-agent-feedback" data-agent="${agentKey}" data-type="up"><i class="fa-solid fa-thumbs-up"></i> CONFIRM (+5% Weight)</button>
+                    <button class="btn btn-matrix-red btn-sm btn-agent-feedback" data-agent="${agentKey}" data-type="down"><i class="fa-solid fa-thumbs-down"></i> PENALIZE (-5% Weight)</button>
+                </div>
+            </div>
+
             <div style="margin-bottom:1rem;">
                 <div style="font-size:0.75rem;margin-bottom:0.3rem;">CONFIDENCE SCORE: ${confPct}%</div>
                 <div class="confidence-meter">
@@ -554,6 +701,23 @@ class AetherSOCApp {
                     }
                 </div>
             </div>`;
+
+        // Bind feedback buttons
+        panel.querySelectorAll('.btn-agent-feedback').forEach(b => {
+            b.addEventListener('click', (e) => {
+                const type = e.currentTarget.getAttribute('data-type');
+                if (type === 'up') {
+                    agent.confidence = Math.min(100, agent.confidence + 5);
+                    this.addAuditLog('REINFORCEMENT_LEARNING', `Analyst confirmed ${agent.name} reasoning. Weight increased.`);
+                    AudioEngine.speak(`Feedback received. ${agent.name} confidence weight increased.`);
+                } else {
+                    agent.confidence = Math.max(0, agent.confidence - 5);
+                    this.addAuditLog('REINFORCEMENT_LEARNING', `Analyst penalized ${agent.name} reasoning. Weight decreased.`);
+                    AudioEngine.speak(`Feedback received. ${agent.name} confidence weight penalized.`);
+                }
+                this.renderAgentDetails(agentKey);
+            });
+        });
     }
 
     // =====================================================
@@ -603,7 +767,12 @@ class AetherSOCApp {
                 const item = this.approvalQueue.splice(idx, 1)[0];
                 this.addAuditLog('HUMAN_APPROVED', `Approved containment for ${item.target}`);
                 this.renderApprovalQueueUI();
-                SwarmEngine.emitLog('response', `HUMAN APPROVAL GRANTED: Executing containment on ${item.target}.`, 'success');
+                SwarmEngine.emitLog('response', `HUMAN APPROVAL GRANTED: Dispatching autonomous containment for ${item.target}.`, 'success');
+                if (item.id && window.TuesdayBackend?.status?.ok) {
+                    SwarmEngine.runApprovalExecution(item.id).catch(err => {
+                        SwarmEngine.emitLog('response', `APPROVAL EXECUTION FAILED: ${err.message}`, 'danger');
+                    });
+                }
             });
         });
 
@@ -614,6 +783,9 @@ class AetherSOCApp {
                 this.addAuditLog('HUMAN_OVERRIDE', `Rejected containment for ${item.target}`);
                 this.renderApprovalQueueUI();
                 SwarmEngine.emitLog('approval', `HUMAN OVERRIDE: Action rejected by analyst.`, 'warning');
+                if (item.id && window.TuesdayBackend?.status?.ok) {
+                    SwarmEngine.rejectApproval(item.id, 'rejected by SOC operator');
+                }
             });
         });
     }
@@ -633,7 +805,7 @@ class AetherSOCApp {
     }
 
     // =====================================================
-    // MEMORY TAB VIEWS
+    // MEMORY TAB VIEWS & LIVE RULE SANDBOX EDITOR
     // =====================================================
     renderMemoryView(memType) {
         const headerTitle = document.getElementById('memory-view-header')?.querySelector('h3');
@@ -683,13 +855,52 @@ class AetherSOCApp {
                     <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.3rem;">${r.description}</p>
                     <div style="font-size:0.72rem;color:var(--matrix-cyan);margin-top:0.3rem;">MITRE: ${r.mitre_ttp}</div>
                 </div>`).join('');
-        } else {
-            body.innerHTML = '<div class="empty-state">Knowledge base synced across all agent nodes.</div>';
+        } else if (memType === 'editor') {
+            if (headerTitle) headerTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> LIVE RULE SANDBOX EDITOR';
+            if (badge) badge.innerText = `Interactive`;
+
+            body.innerHTML = `
+                <div style="display:flex; flex-direction:column; gap:1rem;">
+                    <div class="form-group">
+                        <label>RULE TYPE & NAME</label>
+                        <input type="text" id="editor-rule-title" class="form-control" value="SIGMA-2026-004: Custom C2 Beaconing Detector">
+                    </div>
+                    <div class="form-group">
+                        <label>PATTERN REGEX / STRINGS</label>
+                        <input type="text" id="editor-rule-pattern" class="form-control" value="powershell.*-enc|c2-beacon|mimikatz">
+                    </div>
+                    <div class="form-group">
+                        <label>TEST PAYLOAD LOG SAMPLE</label>
+                        <textarea id="editor-test-payload" class="form-control" rows="4">powershell.exe -enc SQBFAFgAKABOAGUAdw... connecting to 185.220.101.5:443</textarea>
+                    </div>
+                    <button class="btn btn-matrix-green" id="btn-test-rule-sandbox"><i class="fa-solid fa-vial"></i> TEST RULE AGAINST PAYLOAD</button>
+                    <div id="rule-test-results" style="margin-top:0.5rem;"></div>
+                </div>`;
+
+            document.getElementById('btn-test-rule-sandbox')?.addEventListener('click', () => {
+                const pat = document.getElementById('editor-rule-pattern').value;
+                const payload = document.getElementById('editor-test-payload').value;
+                const resDiv = document.getElementById('rule-test-results');
+
+                try {
+                    const regex = new RegExp(pat, 'i');
+                    const isMatch = regex.test(payload);
+                    resDiv.innerHTML = `
+                        <div class="matrix-card" style="padding:0.75rem; border-color:${isMatch ? 'var(--matrix-red)' : 'var(--matrix-green)'};">
+                            <div style="font-size:0.85rem; font-weight:700; color:${isMatch ? 'var(--matrix-red)' : 'var(--matrix-green)'};">
+                                TEST VERDICT: ${isMatch ? 'MATCH DETECTED (TRIGGERED)' : 'CLEAN (NO MATCH)'}
+                            </div>
+                            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.3rem;">Tested regex: <code>/${pat}/i</code> against sample payload.</div>
+                        </div>`;
+                } catch (e) {
+                    resDiv.innerHTML = `<div style="color:var(--matrix-red); font-size:0.8rem;">Invalid Regex Pattern Syntax!</div>`;
+                }
+            });
         }
     }
 
     // =====================================================
-    // DOUGHNUT CHART — Incident Type Distribution
+    // DOUGHNUT CHART
     // =====================================================
     initChart() {
         const ctx = document.getElementById('chart-incident-types')?.getContext('2d');
@@ -744,10 +955,10 @@ class AetherSOCApp {
         body.innerHTML = `
             <div style="color:var(--text-main);line-height:1.6;">
                 <h2 style="color:var(--matrix-green);border-bottom:2px solid var(--matrix-green);padding-bottom:0.5rem;">EXECUTIVE INCIDENT REPORT</h2>
-                <p style="font-size:0.8rem;color:var(--text-muted);">Generated by AETHER//SOC Multi-Agent Intelligence Platform | ${new Date().toLocaleString()}</p>
+                <p style="font-size:0.8rem;color:var(--text-muted);">Generated by TUESDAY Multi-Agent Intelligence Platform | ${new Date().toLocaleString()}</p>
 
                 <h3 style="margin-top:1.5rem;">1. Executive Summary</h3>
-                <p style="font-size:0.85rem;">The AETHER//SOC platform detected and autonomously investigated a critical security incident using ${Object.keys(SwarmEngine.agents).length} specialized agents with consensus-based decision making.</p>
+                <p style="font-size:0.85rem;">The TUESDAY platform detected and autonomously investigated a critical security incident using ${Object.keys(SwarmEngine.agents).length} specialized agents with consensus-based decision making.</p>
 
                 <h3 style="margin-top:1rem;">2. Multi-Agent Consensus Voting</h3>
                 <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin:0.5rem 0;">
@@ -775,11 +986,11 @@ class AetherSOCApp {
         const blob = new Blob([text], { type: 'text/markdown' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `AETHER_SOC_Report_${Date.now()}.md`;
+        a.download = `TUESDAY_Report_${Date.now()}.md`;
         a.click();
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    window.AppController = new AetherSOCApp();
+    window.AppController = new TuesdayApp();
 });

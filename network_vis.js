@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AETHER // MATRIX SOC: Digital SOC Twin Topology Canvas Renderer
+   TUESDAY: Digital SOC Twin Topology Canvas Renderer
    ========================================================================== */
 
 class DigitalSOCTwin {

@@ -1,8 +1,8 @@
-# AETHER-SOC Performance Benchmark & Evaluation Report
+# TUESDAY Performance Benchmark & Evaluation Report
 
 ## 1. Executive Benchmark Summary
 
-| Evaluation Metric | Legacy Human Tier-1/2 SOC | AETHER-SOC Multi-Agent Swarm | Performance Improvement |
+| Evaluation Metric | Legacy Human Tier-1/2 SOC | TUESDAY Multi-Agent Swarm | Performance Improvement |
 | :--- | :--- | :--- | :--- |
 | **Mean Time to Detect (MTTD)** | 14.5 minutes | **120 milliseconds** | **98.6% Reduction** |
 | **Mean Time to Respond (MTTR)** | 42.0 minutes | **1.18 seconds** | **99.9% Reduction** |

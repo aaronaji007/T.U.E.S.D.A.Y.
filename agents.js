@@ -1,8 +1,25 @@
 /* ==========================================================================
-   AETHER // MATRIX SOC: Multi-Agent Swarm v2 — With Negotiation,
-   Consensus Protocol, Confidence Scoring, RCA Generation, Kill Chain,
-   Threat Prediction, and Autonomous Playbook Generator
+   TUESDAY: Multi-Agent Swarm v3 — Agentic Engine
+   Backend (Node + Ollama) drives real LLM agents over SSE with a live
+   reasoning stream. If the backend or model is unavailable, the on-device
+   deterministic pipeline keeps the demo alive.
    ========================================================================== */
+
+// ---- Backend connectivity client -----------------------------------------
+window.TuesdayBackend = {
+    status: { ok: false, engine: 'offline', model: null, checkedAt: 0 },
+    async refresh(force) {
+        if (!force && this.status.ok && Date.now() - this.status.checkedAt < 5000) return this.status;
+        try {
+            const res = await fetch('/api/status', { signal: AbortSignal.timeout(4000) });
+            if (!res.ok) throw new Error('status ' + res.status);
+            this.status = { ...(await res.json()), ok: true, checkedAt: Date.now() };
+        } catch (e) {
+            this.status = { ok: false, engine: 'offline', model: null, checkedAt: Date.now() };
+        }
+        return this.status;
+    }
+};
 
 class SOCAgentSwarm {
     constructor() {
@@ -48,10 +65,177 @@ class SOCAgentSwarm {
     }
 
     // ===========================================================
-    // CORE: Autonomous Multi-Agent Investigation Pipeline v2
-    // with Negotiation, Consensus, Confidence, RCA, Kill Chain
+    // CORE: Agentic Investigation Entry Point
+    // Streams the real LLM swarm from the backend; falls back to the
+    // on-device deterministic pipeline if the backend is unreachable.
     // ===========================================================
-    async processIncidentAlert(rawAlert) {
+    async processIncidentAlert(rawAlert, opts = {}) {
+        this.resetAll();
+        await window.TuesdayBackend.refresh();
+
+        if (window.TuesdayBackend.status.ok) {
+            try {
+                const result = await this.runBackendInvestigation(rawAlert, opts);
+                return result;
+            } catch (e) {
+                this.emitLog('coordinator', `BACKEND STREAM FAILURE: ${e.message}. Switching to on-device rule engine.`, 'danger');
+            }
+        }
+        return this.runRulesFallback(rawAlert);
+    }
+
+    // Streams the investigation over SSE from the Node backend.
+    runBackendInvestigation(alert, opts = {}) {
+        const self = this;
+        return new Promise((resolve, reject) => {
+            let settled = false;
+            const done = (v) => { if (!settled) { settled = true; resolve(v); } };
+            const fail = (e) => { if (!settled) { settled = true; reject(e); } };
+
+            fetch('/api/incident/stream', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    alert,
+                    threshold: opts.threshold ?? (window.AppController?.getAutoThreshold?.() || 80)
+                })
+            }).then(async (res) => {
+                if (!res.ok || !res.body) throw new Error('HTTP ' + res.status);
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                while (true) {
+                    const { done: d, value } = await reader.read();
+                    if (d) break;
+                    buffer += decoder.decode(value, { stream: true });
+                    let idx;
+                    while ((idx = buffer.indexOf('\n\n')) !== -1) {
+                        const chunk = buffer.slice(0, idx);
+                        buffer = buffer.slice(idx + 2);
+                        self.applySSEEvent(chunk);
+                    }
+                }
+                if (buffer.trim()) self.applySSEEvent(buffer);
+            }).then(() => {
+                if (self._lastBackendResult) done(self._lastBackendResult);
+                else fail(new Error('stream ended without a result event'));
+            }).catch(e => fail(e));
+        });
+    }
+
+    // Streams an approved escalation's containment execution from the backend.
+    // Returns a promise resolving when the SSE stream completes.
+    runApprovalExecution(id) {
+        const self = this;
+        return new Promise((resolve, reject) => {
+            fetch('/api/incident/approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            }).then(async (res) => {
+                if (!res.ok || !res.body) throw new Error('HTTP ' + res.status);
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                while (true) {
+                    const { done: d, value } = await reader.read();
+                    if (d) break;
+                    buffer += decoder.decode(value, { stream: true });
+                    let idx;
+                    while ((idx = buffer.indexOf('\n\n')) !== -1) {
+                        const chunk = buffer.slice(0, idx);
+                        buffer = buffer.slice(idx + 2);
+                        self.applySSEEvent(chunk);
+                    }
+                }
+                if (buffer.trim()) self.applySSEEvent(buffer);
+            }).then(resolve).catch(reject);
+        });
+    }
+
+    // Rejects a pending escalation in the backend approval queue.
+    async rejectApproval(id, reason) {
+        try {
+            const res = await fetch('/api/incident/reject', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, reason })
+            });
+            return res.ok;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // Applies a single SSE event frame to swarm state (terminal + panels).
+    applySSEEvent(chunk) {
+        let event = null;
+        const dataLines = [];
+        for (const line of chunk.split('\n')) {
+            if (line.startsWith('event:')) event = line.slice(6).trim();
+            else if (line.startsWith('data:')) dataLines.push(line.slice(5).trim());
+            else if (line.trim() && !line.startsWith(':')) dataLines.push(line.trim());
+        }
+        if (!event || dataLines.length === 0) return;
+        let payload;
+        try { payload = JSON.parse(dataLines.join('\n')); } catch (e) { return; }
+
+        switch (event) {
+            case 'log':
+                this.emitLog(payload.agent, payload.message, payload.type || 'info');
+                break;
+            case 'rca':
+                this.addRCAEvent(payload.time, payload.title, payload.description, payload.severity || 'info');
+                break;
+            case 'killchain':
+                this.activateKillChainStage(payload.stage, payload.evidence);
+                break;
+            case 'ttp':
+                if (typeof MitreEngine !== 'undefined') MitreEngine.flagTTP(payload.id);
+                break;
+            case 'vote':
+                this.consensusRecord.push({ agent: payload.agentName, vote: payload.vote, confidence: payload.confidence, color: payload.color, key: payload.key });
+                break;
+            case 'playbook':
+                this.generatedPlaybook = payload.playbook;
+                break;
+            case 'result':
+                this.applyBackendResult(payload.result);
+                break;
+            case 'error':
+                this.emitLog('coordinator', `ENGINE ERROR: ${payload.message}`, 'danger');
+                break;
+            default:
+                break;
+        }
+    }
+
+    applyBackendResult(result) {
+        this._lastBackendResult = result;
+        if (result.rcaTimeline) this.rcaTimeline = result.rcaTimeline;
+        if (result.killChainState) this.killChainState = result.killChainState;
+        if (result.consensusRecord) this.consensusRecord = result.consensusRecord;
+        if (result.predictedTTPs) this.predictedTTPs = result.predictedTTPs;
+        if (result.generatedPlaybook) this.generatedPlaybook = result.generatedPlaybook;
+
+        if (result.agents) {
+            Object.keys(result.agents).forEach(k => {
+                if (this.agents[k]) {
+                    this.agents[k].status = result.agents[k].status || 'COMPLETED';
+                    this.agents[k].confidence = result.agents[k].confidence || 0;
+                    this.agents[k].vote = result.agents[k].vote ?? null;
+                }
+            });
+        }
+        if (result.approvalRequest && window.AppController) {
+            window.AppController.addApprovalRequest({ ...result.approvalRequest });
+        }
+    }
+
+    // ===========================================================
+    // ON-DEVICE FALLBACK: Deterministic Pipeline v2
+    // ===========================================================
+    async runRulesFallback(rawAlert) {
         const startTime = performance.now();
         this.resetAll();
 

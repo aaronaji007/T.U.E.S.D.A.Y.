@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AETHER-SOC: Purple Team Attack Simulator Engine
+   TUESDAY: Purple Team Attack Simulator Engine
    ========================================================================== */
 
 const AttackSimulator = {

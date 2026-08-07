@@ -1,0 +1,209 @@
+{
+  "episodicMemory": [
+    {
+      "id": "MEM-EP-2026-880",
+      "timestamp": "2026-08-07T13:36:02.165Z",
+      "title": "LockBit 3.0 Ransomware Outbreak",
+      "enclave": "CrowdStrike EDR",
+      "rootCause": "Detected malicious activity on FIN-SERVER-04 (192.168.10.45) (powershell.exe -enc SQBFAFgAKABOAGUAdw... vssadmin delete shadows /all /quiet & ).",
+      "actionsTaken": [
+        "Escalated to Human Approval Queue"
+      ],
+      "resolutionOutcome": "PENDING HUMAN APPROVAL",
+      "mttrSeconds": "43.50",
+      "riskScore": 100,
+      "consensusPct": 100,
+      "engine": "llm",
+      "model": "qwen2.5:7b",
+      "mitreTtps": [
+        "T1059",
+        "T1486",
+        "T1059",
+        "T1486",
+        "T1059",
+        "T1486",
+        "T1059"
+      ]
+    },
+    {
+      "id": "MEM-EP-2026-819",
+      "timestamp": "2026-08-07T13:28:54.855Z",
+      "title": "LockBit 3.0 Ransomware Outbreak",
+      "enclave": "CrowdStrike EDR",
+      "rootCause": "Detected malicious activity on FIN-SERVER-04 (192.168.10.45) (powershell.exe -enc SQBFAFgAKABOAGUAdw... vssadmin delete shadows /all /quiet & ).",
+      "actionsTaken": [
+        "HOST_ISOLATION|FW_BLOCK|CREDENTIAL_REVOKE|SESSION_TERMINATE|SHADOW_COPY_RESTORE"
+      ],
+      "resolutionOutcome": "SUCCESS — Autonomous containment complete",
+      "mttrSeconds": "44.89",
+      "riskScore": 75,
+      "consensusPct": 75,
+      "engine": "llm",
+      "model": "qwen2.5:7b",
+      "mitreTtps": [
+        "T1059",
+        "T1486",
+        "T1059",
+        "T1486",
+        "T1059",
+        "T1486"
+      ]
+    },
+    {
+      "id": "MEM-EP-2026-612",
+      "timestamp": "2026-08-07T13:27:05.269Z",
+      "title": "LockBit 3.0 Ransomware Outbreak",
+      "enclave": "CrowdStrike EDR",
+      "rootCause": "Detected malicious activity on FIN-SERVER-04 (192.168.10.45) (powershell.exe -enc SQBFAFgAKABOAGUAdw... vssadmin delete shadows /all /quiet & ).",
+      "actionsTaken": [
+        "HOST_ISOLATION|FW_BLOCK|CREDENTIAL_REVOKE|SESSION_TERMINATE|SHADOW_COPY_RESTORE"
+      ],
+      "resolutionOutcome": "SUCCESS — Autonomous containment complete",
+      "mttrSeconds": "43.83",
+      "riskScore": 75,
+      "consensusPct": 75,
+      "engine": "llm",
+      "model": "qwen2.5:7b",
+      "mitreTtps": [
+        "T1059",
+        "T1486",
+        "T1059",
+        "T1486",
+        "T1059",
+        "T1486"
+      ]
+    },
+    {
+      "id": "MEM-EP-2026-810",
+      "timestamp": "2026-08-07T12:31:22.406Z",
+      "title": "LockBit 3.0 Ransomware Outbreak",
+      "enclave": "CrowdStrike EDR",
+      "rootCause": "Detected malicious activity on FIN-SERVER-04 (192.168.10.45) (powershell.exe -enc SQBFAFgAKABOAGUAdw... vssadmin delete shadows /all /quiet & ).",
+      "actionsTaken": [
+        "HOST_ISOLATION|FW_BLOCK|CREDENTIAL_REVOKE|SESSION_TERMINATE|SHADOW_COPY_RESTORE"
+      ],
+      "resolutionOutcome": "SUCCESS — Autonomous containment complete",
+      "mttrSeconds": "44.06",
+      "riskScore": 50,
+      "consensusPct": 50,
+      "engine": "llm",
+      "model": "qwen2.5:7b",
+      "mitreTtps": [
+        "T1059",
+        "T1486",
+        "T1059",
+        "T1486"
+      ]
+    },
+    {
+      "id": "MEM-EP-2026-716",
+      "timestamp": "2026-08-07T12:12:30.364Z",
+      "title": "LockBit 3.0 Ransomware Outbreak",
+      "enclave": "CrowdStrike EDR",
+      "rootCause": "Detected malicious activity on FIN-SERVER-04 (192.168.10.45) (powershell.exe -enc SQBFAFgAKABOAGUAdw... vssadmin delete shadows /all /quiet & ).",
+      "actionsTaken": [
+        "HOST_ISOLATION|FW_BLOCK|CREDENTIAL_REVOKE|SESSION_TERMINATE|SHADOW_COPY_RESTORE"
+      ],
+      "resolutionOutcome": "SUCCESS — Autonomous containment complete",
+      "mttrSeconds": "41.67",
+      "riskScore": 75,
+      "consensusPct": 75,
+      "engine": "llm",
+      "model": "qwen2.5:7b",
+      "mitreTtps": [
+        "T1059",
+        "T1486",
+        "T1059",
+        "T1486",
+        "T1059.001"
+      ]
+    }
+  ],
+  "agentWeights": {},
+  "auditLog": [
+    {
+      "ts": "2026-08-07T13:36:02.165Z",
+      "type": "ESCALATION",
+      "details": "[SIM-001] LockBit 3.0 Ransomware Outbreak escalated to human approval queue (risk 100)."
+    },
+    {
+      "ts": "2026-08-07T13:36:02.165Z",
+      "type": "INVESTIGATION",
+      "details": "[SIM-001] PENDING_APPROVAL in 43.50s, risk 100, engine=llm"
+    },
+    {
+      "ts": "2026-08-07T13:35:18.669Z",
+      "type": "ALERT_INGEST",
+      "details": "[SIM-001] LockBit 3.0 Ransomware Outbreak from CrowdStrike EDR"
+    },
+    {
+      "ts": "2026-08-07T13:28:54.856Z",
+      "type": "INVESTIGATION",
+      "details": "[SIM-001] CONTAINED in 44.89s, risk 75, engine=llm"
+    },
+    {
+      "ts": "2026-08-07T13:28:09.978Z",
+      "type": "ALERT_INGEST",
+      "details": "[SIM-001] LockBit 3.0 Ransomware Outbreak from CrowdStrike EDR"
+    },
+    {
+      "ts": "2026-08-07T13:27:05.269Z",
+      "type": "INVESTIGATION",
+      "details": "[SIM-001] CONTAINED in 43.83s, risk 75, engine=llm"
+    },
+    {
+      "ts": "2026-08-07T13:26:21.444Z",
+      "type": "ALERT_INGEST",
+      "details": "[SIM-001] LockBit 3.0 Ransomware Outbreak from CrowdStrike EDR"
+    },
+    {
+      "ts": "2026-08-07T12:31:22.406Z",
+      "type": "INVESTIGATION",
+      "details": "[SIM-001] CONTAINED in 44.06s, risk 50, engine=llm"
+    },
+    {
+      "ts": "2026-08-07T12:30:38.344Z",
+      "type": "ALERT_INGEST",
+      "details": "[SIM-001] LockBit 3.0 Ransomware Outbreak from CrowdStrike EDR"
+    },
+    {
+      "ts": "2026-08-07T12:12:30.364Z",
+      "type": "INVESTIGATION",
+      "details": "[SIM-001] CONTAINED in 41.67s, risk 75, engine=llm"
+    },
+    {
+      "ts": "2026-08-07T12:11:48.700Z",
+      "type": "ALERT_INGEST",
+      "details": "[SIM-001] LockBit 3.0 Ransomware Outbreak from CrowdStrike EDR"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "APP-MSIZMWS5",
+      "incidentId": "MEM-EP-2026-880",
+      "title": "LockBit 3.0 Ransomware Outbreak",
+      "target": "FIN-SERVER-04 (192.168.10.45)",
+      "riskScore": 100,
+      "consensus": "4/4 agents (100%)",
+      "proposedAction": "Isolate FIN-SERVER-04 (192.168.10.45) & revoke credentials",
+      "reasoning": "Critical infrastructure risk exceeds threshold.",
+      "alert": {
+        "id": "SIM-001",
+        "title": "LockBit 3.0 Ransomware Outbreak",
+        "source": "CrowdStrike EDR",
+        "targetHost": "FIN-SERVER-04 (192.168.10.45)",
+        "ioc": "185.220.101.5 (Tor C2 Node)",
+        "payload": "powershell.exe -enc SQBFAFgAKABOAGUAdw... vssadmin delete shadows /all /quiet & LockBit3.0_Payload.exe",
+        "timestamp": "7:05:18 PM"
+      },
+      "status": "PENDING",
+      "createdAt": "2026-08-07T13:36:02.165Z"
+    }
+  ],
+  "stats": {
+    "incidents": 5,
+    "llmRuns": 5,
+    "rulesRuns": 0,
+    "totalToolCalls": 60
+  }
+}
