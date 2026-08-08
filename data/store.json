@@ -1,16 +1,83 @@
 {
   "episodicMemory": [
     {
+      "id": "MEM-EP-2026-143",
+      "timestamp": "2026-08-08T02:52:58.491Z",
+      "title": "APT Supply Chain Trojan (SUNBURST Variant)",
+      "enclave": "Microsoft Entra ID / SIEM",
+      "rootCause": "Detected malicious activity on DC-PRIMARY-01 (192.168.1.10) (SolarWinds.Orion.Core.BusinessLayer.dll injected into memory -> DNS Tunneling C2).",
+      "actionsTaken": [
+        "HOST_ISOLATION|FW_BLOCK|CREDENTIAL_REVOKE|SESSION_TERMINATE|SHADOW_COPY_RESTORE"
+      ],
+      "resolutionOutcome": "SUCCESS — Human-approved autonomous containment complete",
+      "mttrSeconds": "14.60",
+      "riskScore": 25,
+      "consensusPct": 25,
+      "engine": "llm",
+      "model": "qwen2.5:7b",
+      "mitreTtps": [
+        "T1059",
+        "T1486"
+      ]
+    },
+    {
+      "id": "MEM-EP-2026-414",
+      "timestamp": "2026-08-08T02:39:59.813Z",
+      "title": "APT Supply Chain Trojan (SUNBURST Variant)",
+      "enclave": "Microsoft Entra ID / SIEM",
+      "rootCause": "Detected malicious activity on DC-PRIMARY-01 (192.168.1.10) (SolarWinds.Orion.Core.BusinessLayer.dll injected into memory -> DNS Tunneling C2).",
+      "actionsTaken": [
+        "HOST_ISOLATION|FW_BLOCK|CREDENTIAL_REVOKE|SESSION_TERMINATE|SHADOW_COPY_RESTORE"
+      ],
+      "resolutionOutcome": "SUCCESS — Human-approved autonomous containment complete",
+      "mttrSeconds": "22.55",
+      "riskScore": 75,
+      "consensusPct": 75,
+      "engine": "llm",
+      "model": "qwen2.5:7b",
+      "mitreTtps": [
+        "T1558",
+        "T1071.004",
+        "T1059",
+        "T1486",
+        "T1059",
+        "T1486"
+      ]
+    },
+    {
+      "id": "MEM-EP-2026-924",
+      "timestamp": "2026-08-08T02:22:52.490Z",
+      "title": "Custom Threat: 185.220.101.5",
+      "enclave": "CrowdStrike EDR",
+      "rootCause": "Detected malicious activity on FIN-SERVER-04 (192.168.10.45) (Process powershell.exe spawned encoded command: powershell -enc SQBFAFgAKABOAGUA).",
+      "actionsTaken": [
+        "Escalated to Human Approval Queue"
+      ],
+      "resolutionOutcome": "PENDING HUMAN APPROVAL",
+      "mttrSeconds": "40.10",
+      "riskScore": 100,
+      "consensusPct": 100,
+      "engine": "llm",
+      "model": "qwen2.5:7b",
+      "mitreTtps": [
+        "T1059",
+        "T1059",
+        "T1059",
+        "T1059",
+        "T1486"
+      ]
+    },
+    {
       "id": "MEM-EP-2026-880",
       "timestamp": "2026-08-07T13:36:02.165Z",
       "title": "LockBit 3.0 Ransomware Outbreak",
       "enclave": "CrowdStrike EDR",
       "rootCause": "Detected malicious activity on FIN-SERVER-04 (192.168.10.45) (powershell.exe -enc SQBFAFgAKABOAGUAdw... vssadmin delete shadows /all /quiet & ).",
       "actionsTaken": [
-        "Escalated to Human Approval Queue"
+        "HOST_ISOLATION|FW_BLOCK|CREDENTIAL_REVOKE|SESSION_TERMINATE|SHADOW_COPY_RESTORE"
       ],
-      "resolutionOutcome": "PENDING HUMAN APPROVAL",
-      "mttrSeconds": "43.50",
+      "resolutionOutcome": "SUCCESS — Human-approved autonomous containment complete",
+      "mttrSeconds": "19852.26",
       "riskScore": 100,
       "consensusPct": 100,
       "engine": "llm",
@@ -122,6 +189,66 @@
   "agentWeights": {},
   "auditLog": [
     {
+      "ts": "2026-08-08T02:53:13.092Z",
+      "type": "HUMAN_APPROVED",
+      "details": "[APP-MSJS3S3F] Containment executed for APT Supply Chain Trojan (SUNBURST Variant)"
+    },
+    {
+      "ts": "2026-08-08T02:52:58.491Z",
+      "type": "ESCALATION",
+      "details": "[SIM-003] APT Supply Chain Trojan (SUNBURST Variant) escalated to human approval queue (risk 25)."
+    },
+    {
+      "ts": "2026-08-08T02:52:58.491Z",
+      "type": "INVESTIGATION",
+      "details": "[SIM-003] PENDING_APPROVAL in 32.43s, risk 25, engine=llm"
+    },
+    {
+      "ts": "2026-08-08T02:52:26.068Z",
+      "type": "ALERT_INGEST",
+      "details": "[SIM-003] APT Supply Chain Trojan (SUNBURST Variant) from Microsoft Entra ID / SIEM"
+    },
+    {
+      "ts": "2026-08-08T02:40:22.367Z",
+      "type": "HUMAN_APPROVED",
+      "details": "[APP-MSJRN39H] Containment executed for APT Supply Chain Trojan (SUNBURST Variant)"
+    },
+    {
+      "ts": "2026-08-08T02:39:59.813Z",
+      "type": "ESCALATION",
+      "details": "[SIM-003] APT Supply Chain Trojan (SUNBURST Variant) escalated to human approval queue (risk 75)."
+    },
+    {
+      "ts": "2026-08-08T02:39:59.813Z",
+      "type": "INVESTIGATION",
+      "details": "[SIM-003] PENDING_APPROVAL in 38.81s, risk 75, engine=llm"
+    },
+    {
+      "ts": "2026-08-08T02:39:21.005Z",
+      "type": "ALERT_INGEST",
+      "details": "[SIM-003] APT Supply Chain Trojan (SUNBURST Variant) from Microsoft Entra ID / SIEM"
+    },
+    {
+      "ts": "2026-08-08T02:22:52.490Z",
+      "type": "ESCALATION",
+      "details": "[ALERT-3199] Custom Threat: 185.220.101.5 escalated to human approval queue (risk 100)."
+    },
+    {
+      "ts": "2026-08-08T02:22:52.490Z",
+      "type": "INVESTIGATION",
+      "details": "[ALERT-3199] PENDING_APPROVAL in 40.10s, risk 100, engine=llm"
+    },
+    {
+      "ts": "2026-08-08T02:22:12.393Z",
+      "type": "ALERT_INGEST",
+      "details": "[ALERT-3199] Custom Threat: 185.220.101.5 from CrowdStrike EDR"
+    },
+    {
+      "ts": "2026-08-07T19:06:54.424Z",
+      "type": "HUMAN_APPROVED",
+      "details": "[APP-MSIZMWS5] Containment executed for LockBit 3.0 Ransomware Outbreak"
+    },
+    {
       "ts": "2026-08-07T13:36:02.165Z",
       "type": "ESCALATION",
       "details": "[SIM-001] LockBit 3.0 Ransomware Outbreak escalated to human approval queue (risk 100)."
@@ -179,6 +306,71 @@
   ],
   "approvals": [
     {
+      "id": "APP-MSJS3S3F",
+      "incidentId": "MEM-EP-2026-143",
+      "title": "APT Supply Chain Trojan (SUNBURST Variant)",
+      "target": "DC-PRIMARY-01 (192.168.1.10)",
+      "riskScore": 25,
+      "consensus": "1/4 agents (25%)",
+      "proposedAction": "Isolate DC-PRIMARY-01 (192.168.1.10) & revoke credentials",
+      "reasoning": "Critical infrastructure with low risk score, manual review required.",
+      "alert": {
+        "id": "SIM-003",
+        "title": "APT Supply Chain Trojan (SUNBURST Variant)",
+        "source": "Microsoft Entra ID / SIEM",
+        "targetHost": "DC-PRIMARY-01 (192.168.1.10)",
+        "ioc": "45.154.255.87 (APT C2 Server)",
+        "payload": "SolarWinds.Orion.Core.BusinessLayer.dll injected into memory -> DNS Tunneling C2 Beaconing -> Golden Ticket requested.",
+        "timestamp": "8:22:26 AM"
+      },
+      "status": "APPROVED_EXECUTED",
+      "createdAt": "2026-08-08T02:52:58.491Z",
+      "resolvedAt": "2026-08-08T02:53:13.092Z"
+    },
+    {
+      "id": "APP-MSJRN39H",
+      "incidentId": "MEM-EP-2026-414",
+      "title": "APT Supply Chain Trojan (SUNBURST Variant)",
+      "target": "DC-PRIMARY-01 (192.168.1.10)",
+      "riskScore": 75,
+      "consensus": "3/4 agents (75%)",
+      "proposedAction": "Isolate DC-PRIMARY-01 (192.168.1.10) & revoke credentials",
+      "reasoning": "Critical Domain Controller with high risk score and malicious consensus.",
+      "alert": {
+        "id": "SIM-003",
+        "title": "APT Supply Chain Trojan (SUNBURST Variant)",
+        "source": "Microsoft Entra ID / SIEM",
+        "targetHost": "DC-PRIMARY-01 (192.168.1.10)",
+        "ioc": "45.154.255.87 (APT C2 Server)",
+        "payload": "SolarWinds.Orion.Core.BusinessLayer.dll injected into memory -> DNS Tunneling C2 Beaconing -> Golden Ticket requested.",
+        "timestamp": "8:09:20 AM"
+      },
+      "status": "APPROVED_EXECUTED",
+      "createdAt": "2026-08-08T02:39:59.813Z",
+      "resolvedAt": "2026-08-08T02:40:22.367Z"
+    },
+    {
+      "id": "APP-MSJR12KQ",
+      "incidentId": "MEM-EP-2026-924",
+      "title": "Custom Threat: 185.220.101.5",
+      "target": "FIN-SERVER-04 (192.168.10.45)",
+      "riskScore": 100,
+      "consensus": "4/4 agents (100%)",
+      "proposedAction": "Isolate FIN-SERVER-04 (192.168.10.45) & revoke credentials",
+      "reasoning": "Weighted risk exceeds threshold and target asset is critical infrastructure.",
+      "alert": {
+        "id": "ALERT-3199",
+        "title": "Custom Threat: 185.220.101.5",
+        "source": "CrowdStrike EDR",
+        "targetHost": "FIN-SERVER-04 (192.168.10.45)",
+        "ioc": "185.220.101.5 (Tor Exit Node / C2)",
+        "payload": "Process powershell.exe spawned encoded command: powershell -enc SQBFAFgAKABOAGUAdw... connecting to 185.220.101.5:443",
+        "timestamp": "7:52:12 AM"
+      },
+      "status": "PENDING",
+      "createdAt": "2026-08-08T02:22:52.490Z"
+    },
+    {
       "id": "APP-MSIZMWS5",
       "incidentId": "MEM-EP-2026-880",
       "title": "LockBit 3.0 Ransomware Outbreak",
@@ -196,14 +388,15 @@
         "payload": "powershell.exe -enc SQBFAFgAKABOAGUAdw... vssadmin delete shadows /all /quiet & LockBit3.0_Payload.exe",
         "timestamp": "7:05:18 PM"
       },
-      "status": "PENDING",
-      "createdAt": "2026-08-07T13:36:02.165Z"
+      "status": "APPROVED_EXECUTED",
+      "createdAt": "2026-08-07T13:36:02.165Z",
+      "resolvedAt": "2026-08-07T19:06:54.424Z"
     }
   ],
   "stats": {
-    "incidents": 5,
-    "llmRuns": 5,
+    "incidents": 8,
+    "llmRuns": 8,
     "rulesRuns": 0,
-    "totalToolCalls": 60
+    "totalToolCalls": 99
   }
 }

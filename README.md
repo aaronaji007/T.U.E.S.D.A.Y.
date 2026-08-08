@@ -89,13 +89,19 @@ On a lower-spec machine pull the 3b instead and set `"model": "qwen2.5:3b"` in `
 setup.bat
 ```
 
-**5. Start the swarm server**:
+**5. Verify before a demo** (syntax-checks all JS, validates config + store, pings Ollama):
+
+```bat
+verify.bat
+```
+
+**6. Start the swarm server**:
 
 ```bat
 start.bat
 ```
 
-**6. Open the app** — the server starts on `http://localhost:8090` and the UI shows an `ENGINE` indicator confirming whether the LLM backend is connected (`LLM AGENTIC`) or falling back to the rule engine.
+**7. Open the app** — the server starts on `http://localhost:8090` and the UI shows an `ENGINE` indicator confirming whether the LLM backend is connected (`LLM AGENTIC`) or falling back to the rule engine.
 
 ---
 
@@ -143,7 +149,7 @@ If the LLM is unavailable at any step, the same pipeline completes using the det
 
 ```
 config.json          Backend configuration (model, ports, thresholds)
-server.js            Node + Express API server (swarm endpoints)
+server.js            Zero-dependency Node HTTP server (REST + SSE endpoints)
 lib/                 Backend engine
   orchestrator.js      Multi-agent orchestration + consensus
   agents.js            Agent definitions & system prompts
@@ -157,6 +163,12 @@ app.js                Front-end controller (tabs, charts, terminals)
 showcase.js           Visual guided tour
 attack_sim.js         Purple-team scenario definitions
 ```
+
+## Documentation
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — deep dive into the multi-agent orchestration pipeline, consensus model, and governance flow.
+- **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** — every REST + SSE endpoint, request/response shapes, and the frontend trigger flow.
+- **[BENCHMARK_REPORT.md](BENCHMARK_REPORT.md)** — performance evaluation criteria and how to reproduce the numbers with `node benchmark.js`.
 
 ---
 

@@ -1463,3 +1463,51 @@ body.matrix-theme {
     filter: brightness(1.1);
     box-shadow: 0 8px 26px rgba(76, 194, 255, 0.4);
 }
+
+/* =============================================================
+   PRINT / PDF EXPORT — render ONLY the active report modal cleanly
+   ============================================================= */
+@media print {
+    body * { visibility: hidden; }
+    #modal-report, #modal-report * { visibility: visible; }
+    #modal-report {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
+        display: block;
+        background: #ffffff !important;
+    }
+    #modal-report .modal-content {
+        width: 100%;
+        max-width: 100%;
+        max-height: none;
+        height: auto;
+        overflow: visible;
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        background: #ffffff !important;
+    }
+    #modal-report .modal-header,
+    #modal-report .modal-footer,
+    #modal-report .modal-close { display: none !important; }
+    #modal-report .modal-body {
+        padding: 0;
+        overflow: visible;
+        color: #111111 !important;
+    }
+    /* force dark-on-light text for print */
+    #modal-report h1, #modal-report h2, #modal-report h3,
+    #modal-report p, #modal-report td, #modal-report li {
+        color: #111111 !important;
+    }
+    #modal-report table {
+        color: #111111 !important;
+        border-color: #cccccc !important;
+    }
+    #modal-report table td, #modal-report table th {
+        border-color: #cccccc !important;
+    }
+}

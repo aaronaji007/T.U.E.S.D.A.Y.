@@ -22,6 +22,8 @@ class TuesdayApp {
         // Stepper State
         this.simPaused = false;
         this.simSpeed = 1;
+        this.mttrTimer = null;
+        this.mttrStart = 0;
 
         this.initUI();
     }
@@ -336,9 +338,11 @@ class TuesdayApp {
 
         AudioEngine.speak(`Critical security threat detected. ${alert.title}. Initiating multi-agent investigation.`);
         this.addAuditLog('ALERT_INGEST', `SIEM alert [${alert.id}] received from ${alert.source} targeting ${alert.targetHost}.`);
+        this.startMTTRTimer();
 
         const result = await SwarmEngine.processIncidentAlert(alert);
 
+        this.stopMTTRTimer(result.latencySec);
         if (scoreEl) scoreEl.innerText = `${result.riskScore}/100`;
         const countEl = document.getElementById('top-metric-alerts');
         if (countEl) countEl.innerText = (parseInt(countEl.innerText.replace(',', '')) + 1).toLocaleString();
@@ -355,6 +359,33 @@ class TuesdayApp {
         if (result.status === 'CONTAINED') {
             AudioEngine.speak(`Autonomous containment executed successfully in ${result.latencySec} seconds with 100 percent agent consensus.`);
         }
+    }
+
+    // =====================================================
+    // LIVE MTTR COUNTER (stopwatch during investigation)
+    // =====================================================
+    startMTTRTimer() {
+        if (this.mttrTimer) clearInterval(this.mttrTimer);
+        this.mttrStart = performance.now();
+        const el = document.getElementById('mttr-timer-val');
+        if (el) {
+            el.style.color = '#ffb700';
+            el.style.textShadow = '0 0 12px rgba(255,183,0,0.6)';
+        }
+        this.mttrTimer = setInterval(() => {
+            const el = document.getElementById('mttr-timer-val');
+            if (el) el.innerText = `${((performance.now() - this.mttrStart) / 1000).toFixed(1)}s`;
+        }, 100);
+    }
+
+    stopMTTRTimer(finalSeconds) {
+        if (this.mttrTimer) clearInterval(this.mttrTimer);
+        this.mttrTimer = null;
+        const el = document.getElementById('mttr-timer-val');
+        if (!el) return;
+        el.style.color = '#4ade80';
+        el.style.textShadow = '0 0 12px rgba(74,222,128,0.6)';
+        el.innerText = `${finalSeconds ?? ((performance.now() - this.mttrStart) / 1000).toFixed(1)}s`;
     }
 
     // =====================================================
@@ -817,17 +848,21 @@ class TuesdayApp {
             if (headerTitle) headerTitle.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> EPISODIC MEMORY STORE';
             if (badge) badge.innerText = `${SOCMemory.episodicMemory.length} Records`;
 
-            body.innerHTML = SOCMemory.episodicMemory.map(item => `
+            body.innerHTML = SOCMemory.episodicMemory.map((item, i) => `
                 <div class="memory-card">
                     <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;">
                         <strong style="font-size:0.85rem;">${item.title}</strong>
                         <span class="matrix-pill">${item.id}</span>
                     </div>
                     <p style="font-size:0.78rem;color:var(--text-muted);"><strong>Root Cause:</strong> ${item.rootCause}</p>
-                    <p style="font-size:0.78rem;color:var(--text-muted);"><strong>Actions:</strong> ${item.actionsTaken.join(', ')}</p>
+                    <p style="font-size:0.78rem;color:var(--text-muted);"><strong>Actions:</strong> ${(item.actionsTaken || []).join(', ')}</p>
                     <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--matrix-green);margin-top:0.3rem;">
                         <span>${item.resolutionOutcome}</span>
                         <span>MTTR: ${item.mttrSeconds}s</span>
+                    </div>
+                    <div style="display:flex;gap:0.5rem;margin-top:0.6rem;flex-wrap:wrap;">
+                        <button class="btn btn-matrix-green btn-sm" onclick="AppController.reopenIncident(${i})"><i class="fa-solid fa-rotate-left"></i> RE-OPEN INVESTIGATION</button>
+                        <button class="btn btn-matrix-outline btn-sm" onclick="AppController.openIncidentReport(${i})"><i class="fa-solid fa-file-lines"></i> VIEW REPORT</button>
                     </div>
                 </div>`).join('');
         } else if (memType === 'semantic') {
@@ -988,6 +1023,77 @@ class TuesdayApp {
         a.href = URL.createObjectURL(blob);
         a.download = `TUESDAY_Report_${Date.now()}.md`;
         a.click();
+    }
+
+    // =====================================================
+    // EPISODIC MEMORY ACTIONS: RE-OPEN + VIEW REPORT
+    // =====================================================
+    reopenIncident(index) {
+        const item = SOCMemory.episodicMemory[index];
+        if (!item) return;
+
+        // Prefer the stored raw alert (full fidelity) if present.
+        if (item.alert && item.alert.title && item.alert.targetHost) {
+            this.addAuditLog('MEMORY_REOPEN', `Re-opening past incident ${item.id} "${item.title}" from episodic memory.`);
+            document.querySelector('[data-tab="tab-dashboard"]')?.click();
+            this.handleIncomingAlert(item.alert);
+            return;
+        }
+
+        // Fallback: reconstruct a minimal alert from the stored summary.
+        this.addAuditLog('MEMORY_REOPEN', `Re-opening past incident ${item.id} "${item.title}" from episodic memory summary.`);
+        document.querySelector('[data-tab="tab-dashboard"]')?.click();
+        this.handleIncomingAlert({
+            id: `ALERT-REOPEN-${item.id}`,
+            title: item.title,
+            source: item.enclave || 'SOC Memory',
+            targetHost: 'Unknown target',
+            ioc: '',
+            payload: item.rootCause || '',
+            timestamp: new Date().toLocaleTimeString()
+        });
+    }
+
+    openIncidentReport(index) {
+        const item = SOCMemory.episodicMemory[index];
+        if (!item) return;
+
+        const modal = document.getElementById('modal-report');
+        const body = document.getElementById('report-modal-body');
+        if (!modal || !body) return;
+
+        const ttpRows = (item.mitreTtps && item.mitreTtps.length)
+            ? item.mitreTtps.map(t => `<li>${t}</li>`).join('')
+            : '<li>Not mapped in this incident record.</li>';
+
+        body.innerHTML = `
+            <div style="color:var(--text-main);line-height:1.6;">
+                <h2 style="color:var(--matrix-green);border-bottom:2px solid var(--matrix-green);padding-bottom:0.5rem;">INCIDENT RECORD REPORT</h2>
+                <p style="font-size:0.8rem;color:var(--text-muted);">Archived by TUESDAY Multi-Agent Intelligence Platform | ${item.timestamp || new Date().toLocaleString()}</p>
+
+                <h3 style="margin-top:1.5rem;">1. Incident Overview</h3>
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin:0.5rem 0;">
+                    <tr><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);"><strong>ID</strong></td><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);">${item.id}</td></tr>
+                    <tr><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);"><strong>Title</strong></td><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);">${item.title}</td></tr>
+                    <tr><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);"><strong>Enclave</strong></td><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);">${item.enclave || 'n/a'}</td></tr>
+                    <tr><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);"><strong>Engine</strong></td><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);">${item.engine === 'llm' ? `LLM AGENTIC (${item.model})` : 'RULE ENGINE'}</td></tr>
+                    <tr><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);"><strong>Risk Score</strong></td><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);">${item.riskScore ?? 'n/a'}/100</td></tr>
+                    <tr><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);"><strong>Consensus</strong></td><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);">${item.consensusPct ?? 'n/a'}% malicious agreement</td></tr>
+                    <tr><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);"><strong>MTTR</strong></td><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);">${item.mttrSeconds ?? 'n/a'}s</td></tr>
+                    <tr><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);"><strong>Outcome</strong></td><td style="padding:0.4rem;border:1px solid var(--matrix-card-border);">${item.resolutionOutcome}</td></tr>
+                </table>
+
+                <h3 style="margin-top:1rem;">2. Root Cause</h3>
+                <p style="font-size:0.85rem;">${item.rootCause}</p>
+
+                <h3 style="margin-top:1rem;">3. Actions Taken</h3>
+                <ul style="font-size:0.85rem;padding-left:1.2rem;">${(item.actionsTaken || []).map(a => `<li>${a}</li>`).join('')}</ul>
+
+                <h3 style="margin-top:1rem;">4. MITRE ATT&CK TTPs Detected</h3>
+                <ul style="font-size:0.85rem;padding-left:1.2rem;">${ttpRows}</ul>
+            </div>`;
+
+        modal.classList.add('active');
     }
 }
 

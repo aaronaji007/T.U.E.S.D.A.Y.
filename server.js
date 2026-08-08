@@ -18,6 +18,7 @@ const { ASSETS, THREAT_ACTORS } = require('./lib/tools');
 
 const PORT = process.env.PORT || config.port || 8080;
 const ROOT = __dirname;
+const startedAt = Date.now();
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -92,6 +93,22 @@ const server = http.createServer(async (req, res) => {
         ollama: probe,
         port: PORT,
         stats: store.memory.stats
+      });
+    }
+
+    // ---- API: health -------------------------------------------------------
+    if (pathname === '/api/health' && req.method === 'GET') {
+      const probe = await llm.checkModel();
+      return sendJSON(res, 200, {
+        status: 'ok',
+        backend: 'online',
+        engine: probe.ok && (probe.present || (probe.available || []).length > 0) ? 'llm' : 'rules',
+        model: probe.model,
+        modelPresent: !!(probe.present || false),
+        uptimeSec: Math.round((Date.now() - startedAt) / 1000),
+        incidents: store.memory.stats.incidents,
+        approvalsPending: store.memory.approvals.filter(a => a.status === 'PENDING').length,
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -242,6 +259,13 @@ server.listen(PORT, () => {
       console.log(`  ENGINE: Ollama not reachable at ${probe.base}.`);
       console.log('  → Install Ollama (ollama.com) + run: ollama pull qwen2.5:7b');
       console.log('  → Until then, the RULE ENGINE fallback keeps the demo alive.');
+    }
+    if (probe.ok && probe.present) {
+      llm.warmModel().then(w => {
+        console.log(w.ok
+          ? `  WARMUP: ${probe.model} pre-loaded into memory ✓`
+          : `  WARMUP: skipped (${w.error || 'unavailable'}) — first run may be slower.`);
+      });
     }
     console.log('==================================================================');
   });

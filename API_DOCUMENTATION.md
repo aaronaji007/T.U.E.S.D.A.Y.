@@ -79,18 +79,37 @@ acting. The SOC operator resolves it through the queue below.
 - **Method:** `GET /api/status`
 - Returns backend health, resolved engine (`llm`|`rules`), active model, Ollama probe, stats.
 
-### 3.2 Agent weights & knowledge
+### 3.2 Liveness / health probe
+- **Method:** `GET /api/health`
+- Returns `status: "ok"`, resolved engine, model presence, uptime seconds, incident count, and
+  pending-approval count. Designed for demo liveness checks / load balancers.
+```json
+{
+  "status": "ok",
+  "backend": "online",
+  "engine": "llm",
+  "model": "qwen2.5:7b",
+  "modelPresent": true,
+  "uptimeSec": 124,
+  "incidents": 3,
+  "approvalsPending": 1,
+  "timestamp": "2026-08-08T10:15:00.000Z"
+}
+```
+
+### 3.3 Agent weights & knowledge
 - **Method:** `GET /api/agents`
 - Returns reinforcement-learning weights per agent plus seeded assets and threat actors.
 
-### 3.3 Persisted memory
+### 3.4 Persisted memory
 - **Method:** `GET /api/memory`
 - Returns episodic memory, audit log, agent weights, and engine stats from `data/store.json`.
+  Each episodic record includes the original `alert` so past incidents can be re-opened.
 
-### 3.4 Audit trail
+### 3.5 Audit trail
 - **Method:** `GET /api/audit`
 
-### 3.5 Reinforcement-learning feedback
+### 3.6 Reinforcement-learning feedback
 - **Method:** `POST /api/feedback`
 - **Body:** `{ "agent": "log", "type": "up" | "down" }`
 - Adjusts that agent's weighted-confidence multiplier by ±0.05 (clamp 0.1–3.0).
