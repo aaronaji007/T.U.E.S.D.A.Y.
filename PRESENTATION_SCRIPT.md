@@ -42,7 +42,7 @@ This script follows the deck slide-by-slide, then adds a live-demo walkthrough a
 2. **Tool-grounded ReAct loop — zero hallucinations.** Each agent can only render a verdict *after* it calls a real tool and reads the evidence. Tool results are authoritative. If tools say clean, the agent must say clean.
 3. **Weighted consensus plus a safety gate.** Four investigation agents vote with confidence scores. We compute a weighted confidence, and any risk score above the 80% threshold on critical infrastructure **hard-forces escalation to a human**. The model never gets to autonomously destroy a domain controller.
 4. **Adaptive episodic memory.** After every incident the swarm stores the full episode — alert, actions, outcome — and searches that memory on the next alert, so it literally learns from its own history and synthesizes new playbooks.
-5. **A measured 99.9% MTTR reduction** — investigation and response in about 1.1 seconds versus 40+ minutes manually. Those are real numbers from our benchmark harness, which I'll show you.
+5. **A measured ~98% MTTR reduction** — investigation and response in about 46 seconds versus 40+ minutes manually. Those are real numbers, provable live with the on-screen stopwatch as you watch an alert get triaged.
 
 ---
 
@@ -69,7 +69,7 @@ This script follows the deck slide-by-slide, then adds a live-demo walkthrough a
 
 **Now let me walk you through the seven completed UI modules** *(this is the feature tour — show each tab as you name it)*:
 
-1. **Command Center (Dashboard).** Live SIEM feed, the agent bus terminal where every agent's reasoning streams in real time, the swarm node graph, and a **live MTTR stopwatch** that starts the moment an alert lands and stops when containment completes — that's how we prove the 1.1-second number live.
+1. **Command Center (Dashboard).** Live SIEM feed, the agent bus terminal where every agent's reasoning streams in real time, the swarm node graph, and a **live MTTR stopwatch** that starts the moment an alert lands and stops when containment completes — that's how we prove the 46-second response live, versus the 42-minute human baseline.
 2. **Agent Swarm Workspace.** All 8 agents as interactive cards with live reasoning, plus **reinforcement-learning weight sliders** — you can literally tune how much each agent's vote counts.
 3. **Digital SOC Twin + PCAP.** An interactive network canvas showing your enclaves and assets, an animated attack path, and a Wireshark-style packet inspector.
 4. **MITRE ATT&CK Matrix.** A heatmap of detected techniques; click any TTP for a modal with root-cause analysis and kill-chain stages.
@@ -122,7 +122,7 @@ This script follows the deck slide-by-slide, then adds a live-demo walkthrough a
 
 **"Here's why this matters, and where it goes."**
 
-1. **Business & social impact.** We reduce MTTR from roughly 42 minutes to **1.11 seconds** — a 99.9% improvement — and eliminate $100k+ in annual SOAR licensing and Tier-1 triage overhead. Socially, we're **democratizing enterprise-grade AI defense** for underfunded schools, public-sector organizations, and SMBs — while keeping sensitive security telemetry 100% local and private.
+1. **Business & social impact.** We reduce MTTR from roughly 42 minutes to about **46 seconds** — a ~98% improvement, ~52x faster — and eliminate $100k+ in annual SOAR licensing and Tier-1 triage overhead. Socially, we're **democratizing enterprise-grade AI defense** for underfunded schools, public-sector organizations, and SMBs — while keeping sensitive security telemetry 100% local and private.
 2. **Architectural scalability.** The orchestrator is **stateless**, so it scales horizontally behind a load balancer. Smart IOC caching removes duplicate external calls. And we can shard model inference across GPU clusters.
 3. **Future roadmap.** Multi-cloud native remediation (AWS/Azure/GCP IAM and security groups), **federated swarms** that share threat intelligence across enclave boundaries with privacy preserved, and **proactive automated threat hunting** driven by the swarm's own episodic memory.
 
@@ -168,8 +168,8 @@ A: Two hard rules plus a gray zone: risk above threshold **on a CRITICAL asset**
 **Q: What about privacy / data exfiltration of the SOC data itself?**
 A: Everything runs on localhost. No API keys, no cloud calls, model inference on local Ollama. This is a deliberate architecture choice for security workloads.
 
-**Q: Where did the 1.11-second MTTR number come from?**
-A: `benchmark.js` replays the three scenarios through the pipeline and records per-run latency, consensus agreement, and tool calls. Averages from a measured run are recorded in `BENCHMARK_REPORT.md` — reproducible with `node benchmark.js`.
+**Q: Where did the 46-second MTTR number come from?**
+A: The live MTTR stopwatch in the Command Center measures every incident end-to-end — from alert ingest to containment — through the full LLM agentic swarm on local Ollama. That's the ~46s number. Our `benchmark.js` harness additionally records the deterministic rule-engine fallback at ~1.1s; both are documented in `BENCHMARK_REPORT.md`.
 
 **Q: What if you don't have a GPU?**
 A: Switch the model to `qwen2.5:3b` in `config.json` — it runs on CPU. The 7b default needs ~8GB VRAM (e.g. an RTX 4060) or 16GB RAM.

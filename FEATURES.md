@@ -51,7 +51,7 @@ All of this streams live to a web UI: agent reasoning, tool calls, votes, contai
 - **`verify.bat`** — pre-demo health check: JS syntax, config/store validation, Ollama ping, model present → reports `ENGINE` status.
 - **Model pre-warm at boot** — loads `qwen2.5:7b` into VRAM for instant first response.
 - **`GET /api/health`** — liveness, uptime, model status, pending approvals.
-- **`benchmark.js` + `BENCHMARK_REPORT.md`** — reproducible MTTR/consensus/tool-call measurements (measured avg ~1.11 s, 75% consensus).
+- **`benchmark.js` + `BENCHMARK_REPORT.md`** — reproducible MTTR/consensus/tool-call measurements (LLM agentic ~46 s; rule-engine fallback avg ~1.11 s, 75% consensus).
 - **7 attack scenarios support** — the pipeline is scenario-agnostic; 3 drills ship, more can be added as plain data.
 
 ### 2.4 Shipment (attacks / docs / deck)

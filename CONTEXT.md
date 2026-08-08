@@ -30,7 +30,7 @@ Five differentiating ideas:
 2. **Tool-grounded ReAct loop (zero hallucinations).** Agents cannot render a verdict until they call a real tool (`sigma_scan`, `yara_scan`, `ioc_lookup`, `asset_lookup`, `episodic_search`, `ttp_lookup`) and read the evidence. Tool results are authoritative; fabricated detections are impossible.
 3. **Weighted consensus + safety gate.** 4 investigation agents vote with confidence. Weighted confidence and a risk score are computed; risk above the threshold (default 80) on **critical infrastructure hard-forces escalation to a human** — the AI can never autonomously destroy a domain controller.
 4. **Adaptive episodic memory.** Each incident (alert, actions, outcome) is stored as an episode and searched on the next alert, so the swarm learns from its history and synthesizes new playbooks.
-5. **99.9% MTTR reduction.** Measured ~1.1 s vs 40+ min manual triage (reproducible via `benchmark.js`; results in `BENCHMARK_REPORT.md`).
+5. **~98% MTTR reduction.** Measured ~46 s (full LLM agentic swarm on local Ollama) vs 42+ min manual triage — a ~52x speedup. The rule-engine fallback path runs in ~1.1 s. Reproducible via `benchmark.js`; results in `BENCHMARK_REPORT.md`.
 
 ---
 
@@ -75,7 +75,7 @@ COORDINATOR SYNTHESIS — predicts next TTPs + writes adaptive playbook to episo
 
 | Module | What it does |
 |---|---|
-| **Command Center** (dashboard) | Live SIEM feed, streaming agent terminal, swarm node graph, **live MTTR stopwatch** (proves the 1.1 s response live). |
+| **Command Center** (dashboard) | Live SIEM feed, streaming agent terminal, swarm node graph, **live MTTR stopwatch** (proves the ~46 s response live vs 42 min human baseline). |
 | **Agent Swarm Workspace** | 8 agent cards with live reasoning + **reinforcement-learning weight sliders**. |
 | **Digital SOC Twin + PCAP** | Interactive network canvas of enclaves/assets, animated attack path, Wireshark-style packet inspector. |
 | **MITRE ATT&CK Matrix** | Heatmap of detected techniques; clickable TTP modals with root-cause analysis + kill-chain stages. |

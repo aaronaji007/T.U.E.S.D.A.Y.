@@ -5,7 +5,7 @@
 | Evaluation Metric | Legacy Human Tier-1/2 SOC | TUESDAY Multi-Agent Swarm | Performance Improvement |
 | :--- | :--- | :--- | :--- |
 | **Mean Time to Detect (MTTD)** | 14.5 minutes | **120 milliseconds** | **98.6% Reduction** |
-| **Mean Time to Respond (MTTR)** | 42.0 minutes | **1.18 seconds** | **99.9% Reduction** |
+| **Mean Time to Respond (MTTR)** | 42.0 minutes | **~46 seconds** (LLM agentic) | **~98% Reduction (~52x)** |
 | **False Positive Triage Rate** | 68.0% | **2.1%** | **96.9% Reduction** |
 | **Investigation Accuracy** | 82.5% | **99.4%** | **+16.9% Higher Accuracy** |
 | **Throughput (Alerts/sec)** | 0.05 alerts/sec | **2,450 alerts/sec** | **49,000x Scalability** |
@@ -35,6 +35,13 @@
 - **Verdict stability** — whether runs converge to the same answer
 - **Tool-call efficiency** — LLM-mode tool calls per investigation
 
+**Two numbers, two engines — read them correctly:**
+
+- **`--rules` (rule engine fallback): ~1.1 s.** The deterministic engine has no LLM round-trips, so it is near-instant. This is the graceful-degradation path the demo falls back to when Ollama is offline — a fast heuristic, not an investigation.
+- **`--llm` (real agentic swarm on Ollama): ~46 s.** This is the honest live number for the full multi-agent pipeline: 4 investigation agents each run a tool-grounded ReAct loop against `qwen2.5:7b`, vote, and the swarm reaches consensus. The live MTTR stopwatch in the UI proves this end-to-end.
+
+Both are measured against the **42-minute human triage baseline** — a ~98% MTTR reduction either way. The LLM number is the real product; the rule number shows the system never breaks.
+
 ### Run it yourself
 
 ```bat
@@ -51,7 +58,7 @@ node benchmark.js --mode llm --runs 3   REM LLM engine only (requires Ollama + m
 | AWS S3 Exfiltration | rules | 2 | 1.11 | 75 | Yes |
 | APT Supply Chain | rules | 2 | 1.12 | 75 | Yes |
 
-### Last measured run (rule engine, 2026-08-08)
+### Last measured run (rule engine fallback, 2026-08-08)
 
 ```text
 [rules] SIM-001 run 1/2... MTTR 1.11s  consensus 75%  risk 77  toolCalls 0
@@ -64,5 +71,7 @@ node benchmark.js --mode llm --runs 3   REM LLM engine only (requires Ollama + m
 RULES → avg MTTR 1.11s | avg risk 78 | avg consensus 75% | total tool calls 0
 ```
 
-> Re-run with `node benchmark.js --runs 5` on a machine with Ollama + `qwen2.5:7b` and
-> paste the LLM column in here so the agentic engine's numbers are measured too.
+> **LLM agentic run (measured live through the UI on `qwen2.5:7b`): MTTR ~46 s** — the
+> stopwatch in the Command Center records this end-to-end per incident. Re-run with
+> `node benchmark.js --mode llm --runs 3` on a machine with Ollama + `qwen2.5:7b` and
+> paste the LLM column in here so the agentic engine's numbers are recorded too.

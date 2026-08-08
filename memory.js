@@ -32,8 +32,8 @@ class SOCMemorySystem {
                     'Applied deny policy on S3 bucket telemetry-logs-prod',
                     'Enabled CloudTrail S3 Data Event Audit'
                 ],
-                resolutionOutcome: 'SUCCESS - Revoked active STS tokens within 1.1s',
-                mttrSeconds: 1.1
+                resolutionOutcome: 'SUCCESS - Revoked active STS tokens within 46s',
+                mttrSeconds: 46
             }
         ];
 

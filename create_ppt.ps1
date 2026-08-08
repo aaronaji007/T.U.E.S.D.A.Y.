@@ -172,7 +172,7 @@ $featItems = @(
     "2. Tool-Grounded ReAct Loop: Agents must call Sigma/YARA/IOC tools before voting - zero hallucinations.",
     "3. Weighted Consensus and Safety Gate: 8 agents vote with confidence; risk > 80 auto-escalates to human queue.",
     "4. Adaptive Episodic Memory: Remembers past incidents and synthesizes self-learning playbooks.",
-    "5. 99.9% MTTR Reduction: Investigation and response in ~1.1 seconds vs 40+ mins manually."
+    "5. ~98% MTTR Reduction: Investigation and response in ~46 seconds vs 40+ mins manually."
 )
 Add-Card $slide3 480 100 440 405 "KEY FEATURES AND MARKET INNOVATION" $featItems $greenColor
 
@@ -292,7 +292,7 @@ Set-SlideBg $slide8
 Add-Header $slide8 "IMPACT, SCALABILITY & FUTURE SCOPE" 8
 
 $imp1 = @(
-    "- Quantified Business Impact: Reduces MTTR from ~42 mins to ~1.11 seconds (99.9% reduction). Saves $100k+ annually in SOAR licensing and Tier-1 triage costs.",
+    "- Quantified Business Impact: Reduces MTTR from ~42 mins to ~46 seconds (~98% reduction, ~52x faster). Saves $100k+ annually in SOAR licensing and Tier-1 triage costs.",
     "- Social Impact: Democratizes enterprise-grade AI defense for underfunded public sector orgs, schools and SMBs. Keeps sensitive security telemetry 100% local."
 )
 Add-Card $slide8 40 100 880 120 "1. BUSINESS AND SOCIAL IMPACT" $imp1 $greenColor
