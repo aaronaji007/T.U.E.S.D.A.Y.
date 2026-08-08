@@ -1,0 +1,19 @@
+{
+  "generated": "2026-08-08T22:40:00.000Z",
+  "sections": [
+    {
+      "id": "design-systems",
+      "label": "Design Systems",
+      "groups": [
+        {
+          "slug": "tuesday",
+          "files": [
+            { "label": "README.md", "path": "design-systems/tuesday/README.md" },
+            { "label": "SKILL.md", "path": "design-systems/tuesday/SKILL.md" },
+            { "label": "tokens/colors_and_type.css", "path": "design-systems/tuesday/tokens/colors_and_type.css" }
+          ]
+        }
+      ]
+    }
+  ]
+}

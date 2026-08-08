@@ -146,8 +146,8 @@ const MitreEngine = {
                 <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">${foundTech.desc}</p>
 
                 <h3>Detection Logic & Sigma Rule</h3>
-                <div style="background:rgba(0,10,4,0.9); border:1px solid var(--matrix-card-border); padding:0.8rem; border-radius:4px; font-size:0.75rem; margin-bottom:1rem;">
-                    <code>sigma_rule: SIGMA-2026-${foundTech.id.replace('T', '')}<br>
+                <div style="background:rgba(62,122,132,0.10); border:1px solid var(--matrix-card-border); padding:0.8rem; border-radius:4px; font-size:0.75rem; margin-bottom:1rem;">
+                    <code style="color:var(--text-main);">sigma_rule: SIGMA-2026-${foundTech.id.replace('T', '')}<br>
                     pattern: "${foundTech.name.toLowerCase()}" OR "${foundTech.id}"<br>
                     action: ALERT_SWARM & DISPATCH_LOG_ANALYSIS_AGENT</code>
                 </div>

@@ -4,24 +4,24 @@
    ========================================================================== */
 
 :root {
-    --matrix-bg: #0a0e15;
-    --matrix-card-bg: rgba(17, 23, 34, 0.82);
-    --matrix-card-border: rgba(120, 143, 176, 0.20);
-    --matrix-card-glow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --matrix-bg: #D1E2E4;
+    --matrix-card-bg: rgba(255, 255, 255, 0.72);
+    --matrix-card-border: rgba(86, 112, 122, 0.28);
+    --matrix-card-glow: 0 10px 30px rgba(120, 150, 158, 0.22);
 
-    --matrix-green-bright: #5ee6a3;
-    --matrix-green: #3ddc84;
-    --matrix-green-dark: #143b29;
-    --matrix-cyan: #4cc2ff;
-    --matrix-purple: #a78bfa;
-    --matrix-pink: #f472b6;
-    --matrix-teal: #2dd4bf;
-    --matrix-amber: #f5b942;
-    --matrix-red: #ff5c5c;
+    --matrix-green-bright: #6FB4BC;
+    --matrix-green: #3E7A84;
+    --matrix-green-dark: #E4F1F3;
+    --matrix-cyan: #4A8CA8;
+    --matrix-purple: #B08C9E;
+    --matrix-pink: #EEA4A5;
+    --matrix-teal: #7FB3BB;
+    --matrix-amber: #C97A7C;
+    --matrix-red: #FD4040;
 
-    --text-main: #e6edf3;
-    --text-muted: #8b9bb0;
-    --text-dim: #5c6c82;
+    --text-main: #1F2A2E;
+    --text-muted: #5E7076;
+    --text-dim: #8A9CA2;
 
     --font-mono: 'JetBrains Mono', 'Fira Code', 'Share Tech Mono', monospace;
     --font-sans: 'Inter', 'Segoe UI', sans-serif;
@@ -35,9 +35,13 @@
 
 body.matrix-theme {
     background:
-        radial-gradient(1100px 700px at 15% -10%, rgba(76, 194, 255, 0.07), transparent 60%),
-        radial-gradient(900px 600px at 100% 0%, rgba(61, 220, 132, 0.05), transparent 55%),
-        var(--matrix-bg);
+        linear-gradient(110deg,
+            #D1E2E4 0%,
+            #D1E2E4 45%,
+            #DED9DB 65%,
+            #EEA4A5 82%,
+            #FD4040 100%);
+    background-attachment: fixed;
     color: var(--text-main);
     font-family: var(--font-sans);
     min-height: 100vh;
@@ -59,10 +63,10 @@ body.matrix-theme {
     height: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: rgba(10, 14, 21, 0.6);
+    background: rgba(255, 255, 255, 0.45);
 }
 ::-webkit-scrollbar-thumb {
-    background: rgba(120, 143, 176, 0.35);
+    background: rgba(120, 143, 176, 0.45);
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -72,14 +76,14 @@ body.matrix-theme {
 /* Header Navbar */
 .matrix-navbar {
     height: 68px;
-    background: rgba(13, 18, 28, 0.9);
+    background: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--matrix-card-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 1.25rem;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03);
+    box-shadow: 0 1px 0 rgba(31, 42, 46, 0.06);
     overflow: hidden;
 }
 
@@ -98,8 +102,8 @@ body.matrix-theme {
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: linear-gradient(135deg, rgba(76, 194, 255, 0.18), rgba(61, 220, 132, 0.12));
-    border: 1px solid rgba(76, 194, 255, 0.35);
+    background: linear-gradient(135deg, rgba(74, 140, 168, 0.20), rgba(62, 122, 132, 0.14));
+    border: 1px solid rgba(74, 140, 168, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -165,7 +169,7 @@ body.matrix-theme {
     align-items: center;
     justify-content: space-evenly;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.5);
     padding: 0.35rem 0.9rem;
     border-radius: 10px;
     border: 1px solid var(--matrix-card-border);
@@ -241,26 +245,26 @@ body.matrix-theme {
 }
 
 .btn-matrix-green {
-    background: rgba(61, 220, 132, 0.12);
+    background: rgba(62, 122, 132, 0.10);
     color: var(--matrix-green);
-    border-color: rgba(61, 220, 132, 0.4);
+    border-color: rgba(62, 122, 132, 0.38);
 }
 
 .btn-matrix-green:hover {
-    background: rgba(61, 220, 132, 0.2);
-    color: var(--matrix-green-bright);
+    background: rgba(62, 122, 132, 0.18);
+    color: #2C5C64;
     border-color: var(--matrix-green);
 }
 
 .btn-matrix-red {
-    background: rgba(255, 92, 92, 0.12);
+    background: rgba(253, 64, 64, 0.10);
     color: var(--matrix-red);
-    border-color: rgba(255, 92, 92, 0.4);
+    border-color: rgba(253, 64, 64, 0.38);
 }
 
 .btn-matrix-red:hover {
-    background: rgba(255, 92, 92, 0.2);
-    color: #ffb3b3;
+    background: rgba(253, 64, 64, 0.18);
+    color: #D12B2B;
     border-color: var(--matrix-red);
 }
 
@@ -273,7 +277,7 @@ body.matrix-theme {
 .btn-matrix-outline:hover {
     border-color: var(--matrix-cyan);
     color: var(--matrix-cyan);
-    background: rgba(76, 194, 255, 0.06);
+    background: rgba(74, 140, 168, 0.08);
 }
 
 .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.72rem; }
@@ -284,7 +288,7 @@ body.matrix-theme {
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    background: rgba(11, 15, 23, 0.9);
+    background: rgba(255, 255, 255, 0.66);
     padding: 0.5rem 1.5rem;
     border-bottom: 1px solid var(--matrix-card-border);
     overflow-x: auto;
@@ -309,13 +313,13 @@ body.matrix-theme {
 
 .tab-btn:hover {
     color: var(--text-main);
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(31, 42, 46, 0.05);
 }
 
 .tab-btn.active {
     color: var(--matrix-cyan);
-    background: rgba(76, 194, 255, 0.1);
-    border-color: rgba(76, 194, 255, 0.35);
+    background: rgba(74, 140, 168, 0.12);
+    border-color: rgba(74, 140, 168, 0.4);
 }
 
 /* Main Content Area */
@@ -354,7 +358,7 @@ body.matrix-theme {
 
 .card-header {
     padding: 0.75rem 1.2rem;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(31, 42, 46, 0.03);
     border-bottom: 1px solid var(--matrix-card-border);
     display: flex;
     justify-content: space-between;
@@ -401,9 +405,9 @@ body.matrix-theme {
 }
 
 .matrix-banner.alert-critical {
-    border-color: rgba(255, 92, 92, 0.5);
-    background: rgba(40, 12, 16, 0.55);
-    box-shadow: 0 0 26px rgba(255, 92, 92, 0.15);
+    border-color: rgba(253, 64, 64, 0.55);
+    background: rgba(255, 255, 255, 0.68);
+    box-shadow: 0 0 26px rgba(253, 64, 64, 0.20);
 }
 
 .banner-status-icon {
@@ -448,21 +452,21 @@ body.matrix-theme {
     font-size: 0.66rem;
     font-weight: 700;
     letter-spacing: 0.5px;
-    background: rgba(61, 220, 132, 0.1);
+    background: rgba(62, 122, 132, 0.10);
     color: var(--matrix-green);
-    border: 1px solid rgba(61, 220, 132, 0.25);
+    border: 1px solid rgba(62, 122, 132, 0.3);
 }
 
 .matrix-pill.red {
-    background: rgba(255, 92, 92, 0.12);
+    background: rgba(253, 64, 64, 0.10);
     color: var(--matrix-red);
-    border-color: rgba(255, 92, 92, 0.3);
+    border-color: rgba(253, 64, 64, 0.32);
 }
 
 .matrix-pill.amber {
-    background: rgba(245, 185, 66, 0.12);
+    background: rgba(201, 122, 124, 0.12);
     color: var(--matrix-amber);
-    border-color: rgba(245, 185, 66, 0.3);
+    border-color: rgba(201, 122, 124, 0.34);
 }
 
 .banner-metrics {
@@ -472,7 +476,7 @@ body.matrix-theme {
 
 .metric-block {
     text-align: center;
-    background: rgba(10, 14, 21, 0.5);
+    background: rgba(255, 255, 255, 0.6);
     padding: 0.45rem 0.9rem;
     border-radius: 9px;
     border: 1px solid var(--matrix-card-border);
@@ -512,7 +516,7 @@ body.matrix-theme {
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
-    background: rgba(17, 23, 34, 0.55);
+    background: rgba(255, 255, 255, 0.55);
     border: 1px solid var(--matrix-card-border);
     border-radius: 12px;
     padding: 0.55rem 1.1rem;
@@ -571,7 +575,7 @@ body.matrix-theme {
 }
 
 .alert-item {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.5);
     border: 1px solid var(--matrix-card-border);
     border-radius: 9px;
     padding: 0.8rem;
@@ -580,8 +584,8 @@ body.matrix-theme {
 }
 
 .alert-item:hover {
-    border-color: rgba(76, 194, 255, 0.45);
-    background: rgba(255, 255, 255, 0.035);
+    border-color: rgba(74, 140, 168, 0.5);
+    background: rgba(255, 255, 255, 0.65);
     transform: translateY(-1px);
 }
 
@@ -627,13 +631,13 @@ body.matrix-theme {
     border: 1px solid transparent;
 }
 
-.badge-matrix-green { background: rgba(61, 220, 132, 0.12); color: var(--matrix-green); border-color: rgba(61, 220, 132, 0.3); }
-.badge-matrix-cyan { background: rgba(76, 194, 255, 0.12); color: var(--matrix-cyan); border-color: rgba(76, 194, 255, 0.3); }
-.badge-matrix-purple { background: rgba(167, 139, 250, 0.14); color: var(--matrix-purple); border-color: rgba(167, 139, 250, 0.32); }
-.badge-matrix-pink { background: rgba(244, 114, 182, 0.13); color: var(--matrix-pink); border-color: rgba(244, 114, 182, 0.32); }
-.badge-matrix-teal { background: rgba(45, 212, 191, 0.12); color: var(--matrix-teal); border-color: rgba(45, 212, 191, 0.3); }
-.badge-matrix-red { background: rgba(255, 92, 92, 0.13); color: var(--matrix-red); border-color: rgba(255, 92, 92, 0.32); }
-.badge-matrix-amber { background: rgba(245, 185, 66, 0.13); color: var(--matrix-amber); border-color: rgba(245, 185, 66, 0.32); }
+.badge-matrix-green { background: rgba(62, 122, 132, 0.10); color: var(--matrix-green); border-color: rgba(62, 122, 132, 0.3); }
+.badge-matrix-cyan { background: rgba(74, 140, 168, 0.10); color: var(--matrix-cyan); border-color: rgba(74, 140, 168, 0.3); }
+.badge-matrix-purple { background: rgba(176, 140, 158, 0.14); color: var(--matrix-purple); border-color: rgba(176, 140, 158, 0.34); }
+.badge-matrix-pink { background: rgba(238, 164, 165, 0.16); color: var(--matrix-pink); border-color: rgba(238, 164, 165, 0.4); }
+.badge-matrix-teal { background: rgba(127, 179, 187, 0.14); color: var(--matrix-teal); border-color: rgba(127, 179, 187, 0.34); }
+.badge-matrix-red { background: rgba(253, 64, 64, 0.10); color: var(--matrix-red); border-color: rgba(253, 64, 64, 0.32); }
+.badge-matrix-amber { background: rgba(201, 122, 124, 0.12); color: var(--matrix-amber); border-color: rgba(201, 122, 124, 0.34); }
 
 /* Visualizer & Agent Nodes Graph */
 .visualizer-layout {
@@ -645,7 +649,7 @@ body.matrix-theme {
 .agent-swarm-map {
     height: 310px;
     position: relative;
-    background: radial-gradient(circle at center, rgba(20, 28, 42, 0.55), rgba(10, 14, 21, 0.9));
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.45));
     border: 1px solid var(--matrix-card-border);
     border-radius: 10px;
     overflow: hidden;
@@ -681,10 +685,10 @@ body.matrix-theme {
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
-    color: #fff;
+    color: rgba(31, 42, 46, 0.85);
     font-weight: 700;
-    border: 2px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 2px 8px rgba(62, 122, 132, 0.18);
 }
 
 .bg-matrix-green { background: var(--matrix-green); }
@@ -708,12 +712,12 @@ body.matrix-theme {
     margin-top: 2px;
     padding: 0.12rem 0.4rem;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(31, 42, 46, 0.06);
 }
 
 /* Matrix Terminal */
 .matrix-terminal {
-    background: #0c111a;
+    background: rgba(255, 255, 255, 0.6);
     border: 1px solid var(--matrix-card-border);
     border-radius: 10px;
     overflow: hidden;
@@ -723,7 +727,7 @@ body.matrix-theme {
 }
 
 .terminal-header {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(31, 42, 46, 0.04);
     padding: 0.4rem 0.9rem;
     font-size: 0.72rem;
     font-family: var(--font-mono);
@@ -772,7 +776,7 @@ body.matrix-theme {
     padding: 0.7rem;
     border-radius: 6px;
     border: 1px solid transparent;
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -782,12 +786,12 @@ body.matrix-theme {
 
 .agent-nav-item:hover {
     border-color: var(--matrix-green);
-    background: rgba(255, 255, 255, 0.045);
+    background: rgba(62, 122, 132, 0.08);
 }
 
 .agent-nav-item.active {
     border-color: var(--matrix-green);
-    background: rgba(86, 226, 143, 0.12);
+    background: rgba(62, 122, 132, 0.14);
 }
 
 .agent-details-view {
@@ -818,7 +822,7 @@ body.matrix-theme {
 .twin-canvas-container {
     height: 540px;
     position: relative;
-    background: #0a0f18;
+    background: rgba(255, 255, 255, 0.55);
     border: 1px solid var(--matrix-card-border);
     border-radius: 8px;
     overflow: hidden;
@@ -831,7 +835,7 @@ body.matrix-theme {
     bottom: 1rem;
     right: 1rem;
     width: 320px;
-    background: rgba(2, 12, 5, 0.95);
+    background: rgba(255, 255, 255, 0.9);
     border: 1px solid var(--matrix-card-border);
     border-radius: 6px;
     padding: 1rem;
@@ -846,7 +850,7 @@ body.matrix-theme {
 }
 
 .mitre-column {
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(255, 255, 255, 0.5);
     border: 1px solid var(--matrix-card-border);
     border-radius: 6px;
     padding: 0.5rem;
@@ -865,7 +869,7 @@ body.matrix-theme {
 }
 
 .mitre-card {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.6);
     border: 1px solid var(--matrix-card-border);
     border-radius: 4px;
     padding: 0.4rem;
@@ -874,7 +878,7 @@ body.matrix-theme {
 }
 
 .mitre-card.detected {
-    background: rgba(255, 92, 92, 0.16);
+    background: rgba(253, 64, 64, 0.14);
     border-color: var(--matrix-red);
 }
 
@@ -884,7 +888,7 @@ body.matrix-theme {
 .memory-tab {
     padding: 0.75rem 1rem;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(255, 255, 255, 0.5);
     border: 1px solid transparent;
     cursor: pointer;
     color: var(--text-muted);
@@ -892,12 +896,12 @@ body.matrix-theme {
 
 .memory-tab.active {
     color: var(--matrix-green);
-    background: rgba(86, 226, 143, 0.12);
+    background: rgba(62, 122, 132, 0.14);
     border-color: var(--matrix-green);
 }
 
 .memory-card {
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(255, 255, 255, 0.55);
     border: 1px solid var(--matrix-card-border);
     border-radius: 6px;
     padding: 0.9rem;
@@ -906,7 +910,7 @@ body.matrix-theme {
 
 /* Purple Team Simulator Cards */
 .scenario-card {
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(255, 255, 255, 0.55);
     border: 1px solid var(--matrix-card-border);
     border-radius: 8px;
     padding: 1.1rem;
@@ -925,14 +929,14 @@ body.matrix-theme {
 .form-control {
     width: 100%;
     padding: 0.6rem 0.75rem;
-    background: rgba(10, 14, 21, 0.7);
+    background: rgba(255, 255, 255, 0.7);
     border: 1px solid var(--matrix-card-border);
     border-radius: 8px;
     color: var(--text-main);
     font-family: var(--font-mono);
 }
 
-.form-control:focus { outline: none; border-color: var(--matrix-cyan); box-shadow: 0 0 0 3px rgba(76, 194, 255, 0.12); }
+.form-control:focus { outline: none; border-color: var(--matrix-cyan); box-shadow: 0 0 0 3px rgba(74, 140, 168, 0.14); }
 
 /* Modal */
 .modal-overlay {
@@ -941,7 +945,7 @@ body.matrix-theme {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(8, 11, 17, 0.8);
+    background: rgba(31, 42, 46, 0.45);
     backdrop-filter: blur(10px);
     display: none;
     align-items: center;
@@ -954,7 +958,7 @@ body.matrix-theme {
 .modal-content {
     background: var(--matrix-card-bg);
     border: 1px solid var(--matrix-card-border);
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+    box-shadow: 0 24px 70px rgba(31, 42, 46, 0.35);
     border-radius: 14px;
     width: 90%;
     max-width: 850px;
@@ -1043,7 +1047,7 @@ body.matrix-theme {
     justify-content: space-between;
     gap: 0.5rem;
     border: 1px solid var(--matrix-card-border);
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(255, 255, 255, 0.5);
     padding: 0.75rem;
     border-radius: 6px;
     overflow-x: auto;
@@ -1056,7 +1060,7 @@ body.matrix-theme {
     text-align: center;
     border-radius: 4px;
     border: 1px solid var(--matrix-card-border);
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.6);
     color: var(--text-muted);
     font-size: 0.75rem;
     font-family: var(--font-mono);
@@ -1065,13 +1069,13 @@ body.matrix-theme {
 }
 
 .kc-step.active {
-    background: rgba(255, 92, 92, 0.16);
+    background: rgba(253, 64, 64, 0.14);
     color: var(--matrix-red);
     border-color: var(--matrix-red);
 }
 
 .kc-step.completed {
-    background: rgba(61, 220, 132, 0.14);
+    background: rgba(62, 122, 132, 0.14);
     color: var(--matrix-green);
     border-color: var(--matrix-green);
 }
@@ -1081,7 +1085,7 @@ body.matrix-theme {
     position: relative;
     width: 100%;
     height: 22px;
-    background: rgba(10, 14, 21, 0.8);
+    background: rgba(255, 255, 255, 0.75);
     border: 1px solid var(--matrix-card-border);
     border-radius: 4px;
     overflow: hidden;
@@ -1104,7 +1108,6 @@ body.matrix-theme {
     font-size: 0.72rem;
     font-weight: 700;
     color: var(--text-main);
-    text-shadow: 0 0 4px #000, 0 0 8px #000;
     z-index: 1;
     pointer-events: none;
 }
@@ -1145,7 +1148,7 @@ body.matrix-theme {
 .ioc-search-bar {
     width: 100%;
     padding: 0.7rem 0.9rem;
-    background: rgba(10, 14, 21, 0.7);
+    background: rgba(255, 255, 255, 0.7);
     border: 1px solid var(--matrix-card-border);
     border-radius: 8px;
     color: var(--text-main);
@@ -1157,7 +1160,7 @@ body.matrix-theme {
 
 .ioc-search-bar:focus {
     border-color: var(--matrix-cyan);
-    box-shadow: 0 0 0 3px rgba(76, 194, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(74, 140, 168, 0.14);
 }
 
 .ioc-result-card {
@@ -1176,17 +1179,14 @@ body.matrix-theme {
 /* 6. Enhanced Terminal Log */
 .log-line.severity-critical {
     color: var(--matrix-red);
-    text-shadow: 0 0 5px rgba(255, 59, 59, 0.4);
 }
 
 .log-line.severity-warning {
     color: var(--matrix-amber);
-    text-shadow: 0 0 5px rgba(255, 183, 0, 0.4);
 }
 
 .log-line.severity-success {
-    color: var(--matrix-green-bright);
-    text-shadow: 0 0 8px var(--matrix-green-bright);
+    color: var(--matrix-green);
 }
 
 .log-line.severity-info {
@@ -1194,14 +1194,13 @@ body.matrix-theme {
 }
 
 .log-ioc-highlight {
-    background: rgba(0, 243, 255, 0.18);
+    background: rgba(74, 140, 168, 0.12);
     color: var(--matrix-cyan);
     padding: 0.1rem 0.35rem;
     border-radius: 3px;
-    border: 1px solid rgba(0, 243, 255, 0.35);
+    border: 1px solid rgba(74, 140, 168, 0.35);
     font-family: var(--font-mono);
     font-weight: 700;
-    text-shadow: 0 0 6px rgba(0, 243, 255, 0.5);
 }
 
 /* 7. Metrics Chart Section */
@@ -1210,7 +1209,7 @@ body.matrix-theme {
     flex: 1;
     min-width: 280px;
     position: relative;
-    background: rgba(12, 16, 24, 0.7);
+    background: rgba(255, 255, 255, 0.6);
     border: 1px solid var(--matrix-card-border);
     border-radius: 6px;
     padding: 0.75rem;
@@ -1218,7 +1217,7 @@ body.matrix-theme {
 
 /* 8. Prediction Card */
 .prediction-card {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.55);
     border: 1px solid var(--matrix-card-border);
     border-left: 3px solid var(--matrix-cyan);
     border-radius: 10px;
@@ -1241,8 +1240,8 @@ body.matrix-theme {
     font-weight: 700;
     font-size: 0.82rem;
     color: var(--matrix-cyan);
-    background: rgba(0, 243, 255, 0.12);
-    border: 1px solid rgba(0, 243, 255, 0.3);
+    background: rgba(74, 140, 168, 0.12);
+    border: 1px solid rgba(74, 140, 168, 0.3);
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
     display: inline-block;
@@ -1266,7 +1265,7 @@ body.matrix-theme {
     align-items: flex-start;
     gap: 0.75rem;
     padding: 0.6rem 0.8rem;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.55);
     border: 1px solid var(--matrix-card-border);
     border-radius: 4px;
     font-size: 0.8rem;
@@ -1290,22 +1289,22 @@ body.matrix-theme {
 
 .tour-spotlight {
     position: fixed;
-    border: 1px solid rgba(76, 194, 255, 0.55);
+    border: 1px solid rgba(74, 140, 168, 0.55);
     border-radius: 14px;
     box-shadow:
-        0 0 0 9999px rgba(6, 9, 15, 0.78),
-        0 0 34px rgba(76, 194, 255, 0.22),
-        inset 0 0 0 1px rgba(76, 194, 255, 0.08);
+        0 0 0 9999px rgba(31, 42, 46, 0.5),
+        0 0 34px rgba(74, 140, 168, 0.3),
+        inset 0 0 0 1px rgba(74, 140, 168, 0.12);
     transition: top .4s ease, left .4s ease, width .4s ease, height .4s ease;
     pointer-events: none;
 }
 
 .tour-spotlight.tour-final {
-    border-color: rgba(245, 185, 66, 0.6);
+    border-color: rgba(201, 122, 124, 0.6);
     box-shadow:
-        0 0 0 9999px rgba(6, 9, 15, 0.78),
-        0 0 34px rgba(245, 185, 66, 0.22),
-        inset 0 0 0 1px rgba(245, 185, 66, 0.08);
+        0 0 0 9999px rgba(31, 42, 46, 0.5),
+        0 0 34px rgba(201, 122, 124, 0.3),
+        inset 0 0 0 1px rgba(201, 122, 124, 0.12);
 }
 
 .tour-skip {
@@ -1314,7 +1313,7 @@ body.matrix-theme {
     right: 20px;
     z-index: 9600;
     pointer-events: auto;
-    background: rgba(12, 16, 24, 0.85);
+    background: rgba(255, 255, 255, 0.85);
     border: 1px solid var(--matrix-card-border);
     border-radius: 8px;
     color: var(--text-muted);
@@ -1339,12 +1338,12 @@ body.matrix-theme {
     transform: translateX(-50%);
     width: min(720px, 92vw);
     pointer-events: auto;
-    background: linear-gradient(180deg, rgba(24, 31, 45, 0.97), rgba(13, 18, 28, 0.99));
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(240, 245, 247, 0.99));
     border: 1px solid var(--matrix-card-border);
     border-top: 2px solid var(--matrix-cyan);
     border-radius: 14px;
     padding: 1.05rem 1.4rem 0.95rem;
-    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 22px 60px rgba(31, 42, 46, 0.4);
     font-family: var(--font-sans);
     color: var(--text-main);
 }
@@ -1406,7 +1405,7 @@ body.matrix-theme {
 .tour-progress {
     height: 3px;
     border-radius: 3px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(31, 42, 46, 0.1);
     overflow: hidden;
     margin-bottom: 0.9rem;
 }
@@ -1440,28 +1439,28 @@ body.matrix-theme {
 }
 
 .tour-btn-ghost {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(31, 42, 46, 0.04);
     border: 1px solid var(--matrix-card-border);
     color: var(--text-muted);
 }
 
 .tour-btn-ghost:hover {
     color: var(--text-main);
-    border-color: rgba(120, 143, 176, 0.45);
-    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(120, 143, 176, 0.5);
+    background: rgba(31, 42, 46, 0.07);
 }
 
 .tour-btn-primary {
     margin-left: auto;
-    background: linear-gradient(135deg, var(--matrix-cyan), #2f9fd6);
-    border: 1px solid rgba(76, 194, 255, 0.5);
-    color: #06121c;
-    box-shadow: 0 6px 20px rgba(76, 194, 255, 0.28);
+    background: linear-gradient(135deg, var(--matrix-cyan), #3A7186);
+    border: 1px solid rgba(74, 140, 168, 0.55);
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(74, 140, 168, 0.32);
 }
 
 .tour-btn-primary:hover {
     filter: brightness(1.1);
-    box-shadow: 0 8px 26px rgba(76, 194, 255, 0.4);
+    box-shadow: 0 8px 26px rgba(74, 140, 168, 0.4);
 }
 
 /* =============================================================

@@ -1,0 +1,58 @@
+/* ==========================================================================
+   TUESDAY — design tokens (raw + semantic)
+   Source of truth for the ice-field light re-theme. Mirrors :root in styles.css.
+   Identity: cool ice-blue field swept by a salmon->red danger ramp.
+   Gradient: linear-gradient(110deg, #D1E2E4 0%, #D1E2E4 45%, #DED9DB 65%,
+   #EEA4A5 82%, #FD4040 100%) on body.matrix-theme, background-attachment: fixed.
+   ========================================================================== */
+
+:root {
+    /* ---- Raw palette (the gradient ramp) ------------------------------ */
+    --ice:      #D1E2E4;      /* cool base field          */
+    --mist:     #DED9DB;      /* neutral mid-tone         */
+    --salmon:   #EEA4A5;      /* warm warning ramp        */
+    --signal:   #FD4040;      /* danger / live red        */
+
+    /* Functional hues derived from the ramp family */
+    --teal-deep:   #3E7A84;   /* healthy / success       */
+    --teal-bright: #6FB4BC;   /* bright success          */
+    --teal-tint:   #E4F1F3;   /* success fill / hover    */
+    --cyan:        #4A8CA8;   /* info / log              */
+    --purple:      #B08C9E;   /* threat intel            */
+    --pink:        #EEA4A5;   /* malware                 */
+    --teal:        #7FB3BB;   /* cloud                   */
+    --amber:       #C97A7C;   /* warning (darkened salmon) */
+
+    /* ---- Neutrals on light -------------------------------------------- */
+    --ink-1: #1F2A2E;         /* primary text   */
+    --ink-2: #5E7076;         /* secondary text */
+    --ink-3: #8A9CA2;         /* dim / disabled */
+    --card:  rgba(255, 255, 255, 0.72);   /* translucent glass card */
+    --edge:  rgba(86, 112, 122, 0.28);    /* soft hairline          */
+    --glow:  0 10px 30px rgba(120, 150, 158, 0.22);   /* card elevation */
+
+    /* ---- Type --------------------------------------------------------- */
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Share Tech Mono', 'Consolas', monospace;
+    --font-sans: 'Inter', 'Segoe UI', sans-serif;
+    /* scale: caption .62rem / micro-label .68rem / label .75-.78rem /
+       body .82rem / h3 .85rem / h2 1.05rem / display 1.5-2.2rem.
+       Mono for all values + telemetry. Terminal keeps Share Tech Mono. */
+
+    /* ---- Semantic aliases (backwards compat with inline JS templates) - */
+    --matrix-bg: var(--ice);
+    --matrix-card-bg: var(--card);
+    --matrix-card-border: var(--edge);
+    --matrix-card-glow: var(--glow);
+    --matrix-green-bright: var(--teal-bright);
+    --matrix-green: var(--teal-deep);
+    --matrix-green-dark: var(--teal-tint);
+    --matrix-cyan: var(--cyan);
+    --matrix-purple: var(--purple);
+    --matrix-pink: var(--pink);
+    --matrix-teal: var(--teal);
+    --matrix-amber: var(--amber);
+    --matrix-red: var(--signal);
+    --text-main: var(--ink-1);
+    --text-muted: var(--ink-2);
+    --text-dim: var(--ink-3);
+}

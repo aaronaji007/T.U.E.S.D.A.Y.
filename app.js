@@ -285,7 +285,7 @@ class TuesdayApp {
     pulseAgentNode(agentKey) {
         const node = document.querySelector(`.agent-node[data-agent="${agentKey}"]`);
         if (!node) return;
-        node.style.filter = 'brightness(1.8) drop-shadow(0 0 8px rgba(0,255,102,0.8))';
+        node.style.filter = 'brightness(1.6) drop-shadow(0 0 8px rgba(62,122,132,0.5))';
         setTimeout(() => { node.style.filter = ''; }, 1200);
     }
 
@@ -333,7 +333,7 @@ class TuesdayApp {
             titleEl.innerText = `> CRITICAL THREAT: ${alert.title}`;
             descEl.innerText = `Multi-agent swarm executing parallel investigation on target ${alert.targetHost}.`;
             scoreEl.innerText = '??/100';
-            scoreEl.style.color = '#ff3b3b';
+            scoreEl.style.color = '#FD4040';
         }
 
         AudioEngine.speak(`Critical security threat detected. ${alert.title}. Initiating multi-agent investigation.`);
@@ -369,8 +369,8 @@ class TuesdayApp {
         this.mttrStart = performance.now();
         const el = document.getElementById('mttr-timer-val');
         if (el) {
-            el.style.color = '#ffb700';
-            el.style.textShadow = '0 0 12px rgba(255,183,0,0.6)';
+            el.style.color = '#C97A7C';
+            el.style.textShadow = '0 0 12px rgba(201,122,124,0.5)';
         }
         this.mttrTimer = setInterval(() => {
             const el = document.getElementById('mttr-timer-val');
@@ -383,8 +383,8 @@ class TuesdayApp {
         this.mttrTimer = null;
         const el = document.getElementById('mttr-timer-val');
         if (!el) return;
-        el.style.color = '#4ade80';
-        el.style.textShadow = '0 0 12px rgba(74,222,128,0.6)';
+        el.style.color = '#3E7A84';
+        el.style.textShadow = '0 0 12px rgba(62,122,132,0.5)';
         el.innerText = `${finalSeconds ?? ((performance.now() - this.mttrStart) / 1000).toFixed(1)}s`;
     }
 
@@ -412,7 +412,7 @@ class TuesdayApp {
 
         packets.forEach(p => {
             html += `
-                <tr style="border-bottom:1px solid rgba(0,255,102,0.1);">
+                <tr style="border-bottom:1px solid rgba(62,122,132,0.12);">
                     <td style="padding:0.3rem; color:var(--text-muted);">${p.id}</td>
                     <td style="padding:0.3rem; color:var(--matrix-cyan);">${p.time}</td>
                     <td style="padding:0.3rem;">${p.src}</td>
@@ -593,7 +593,7 @@ class TuesdayApp {
         let text = logText.replace(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/g, '<span class="log-ioc-highlight">$1</span>');
         text = text.replace(/(T\d{4}(?:\.\d{3})?)/g, '<span class="log-ioc-highlight">$1</span>');
 
-        line.innerHTML = `<span class="agent-tag" style="color:${agent ? agent.color : '#00ff66'}">[${agent ? agent.name : 'SYSTEM'}]</span> ${text}`;
+        line.innerHTML = `<span class="agent-tag" style="color:${agent ? agent.color : '#3E7A84'}">[${agent ? agent.name : 'SYSTEM'}]</span> ${text}`;
         bus.appendChild(line);
         bus.scrollTop = bus.scrollHeight;
     }
@@ -655,7 +655,7 @@ class TuesdayApp {
             const agent = SwarmEngine.agents[k];
             html += `
                 <div class="agent-nav-item ${k === this.selectedAgentKey ? 'active' : ''}" data-agent="${k}">
-                    <div class="node-icon" style="width:32px;height:32px;font-size:0.9rem;background:${agent.color};color:#000;">
+                    <div class="node-icon" style="width:32px;height:32px;font-size:0.9rem;background:${agent.color};color:rgba(31,42,46,0.85);">
                         <i class="fa-solid ${agent.icon}"></i>
                     </div>
                     <div>
@@ -687,7 +687,7 @@ class TuesdayApp {
         panel.innerHTML = `
             <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--matrix-card-border);padding-bottom:1rem;margin-bottom:1rem;">
                 <div style="display:flex;align-items:center;gap:1rem;">
-                    <div class="node-icon" style="width:48px;height:48px;font-size:1.3rem;background:${agent.color};color:#000;">
+                    <div class="node-icon" style="width:48px;height:48px;font-size:1.3rem;background:${agent.color};color:rgba(31,42,46,0.85);">
                         <i class="fa-solid ${agent.icon}"></i>
                     </div>
                     <div>
@@ -702,7 +702,7 @@ class TuesdayApp {
             </div>
 
             <!-- REINFORCEMENT LEARNING FEEDBACK BUTTONS -->
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,15,7,0.7); border:1px solid var(--matrix-card-border); padding:0.6rem 1rem; border-radius:6px; margin-bottom:1rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(62,122,132,0.10); border:1px solid var(--matrix-card-border); padding:0.6rem 1rem; border-radius:6px; margin-bottom:1rem;">
                 <div style="font-size:0.78rem;"><strong>REINFORCEMENT LEARNING FEEDBACK:</strong> Rate this agent's reasoning accuracy:</div>
                 <div style="display:flex; gap:0.5rem;">
                     <button class="btn btn-matrix-green btn-sm btn-agent-feedback" data-agent="${agentKey}" data-type="up"><i class="fa-solid fa-thumbs-up"></i> CONFIRM (+5% Weight)</button>
@@ -776,7 +776,7 @@ class TuesdayApp {
         let html = '';
         this.approvalQueue.forEach((req, idx) => {
             html += `
-                <div style="background:rgba(0,15,7,0.7);border:1px solid var(--matrix-amber);border-radius:6px;padding:1rem;margin-bottom:1rem;">
+                <div style="background:rgba(253,64,64,0.08);border:1px solid var(--matrix-amber);border-radius:6px;padding:1rem;margin-bottom:1rem;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
                         <h4 style="color:var(--matrix-amber);font-size:0.9rem;"><i class="fa-solid fa-triangle-exclamation"></i> ${req.title}</h4>
                         <span class="badge badge-matrix-red">RISK: ${req.riskScore}/100</span>
@@ -830,7 +830,7 @@ class TuesdayApp {
         if (!container) return;
 
         container.innerHTML = this.auditLogs.map(l => `
-            <div style="font-size:0.68rem;margin-bottom:0.3rem;border-bottom:1px solid rgba(0,255,102,0.1);padding-bottom:0.2rem;">
+            <div style="font-size:0.68rem;margin-bottom:0.3rem;border-bottom:1px solid rgba(62,122,132,0.12);padding-bottom:0.2rem;">
                 <span style="color:var(--matrix-green)">[${l.timestamp}]</span> <strong style="color:var(--matrix-amber)">${l.type}</strong>: ${l.details}
             </div>`).join('');
     }
@@ -941,14 +941,14 @@ class TuesdayApp {
         const ctx = document.getElementById('chart-incident-types')?.getContext('2d');
         if (!ctx) return;
 
-        Chart.defaults.color = '#6ba876';
+        Chart.defaults.color = '#5E7076';
         this.chartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Ransomware', 'Cloud IAM Breach', 'APT Supply Chain', 'Phishing'],
                 datasets: [{
                     data: [42, 28, 18, 12],
-                    backgroundColor: ['#ff3b3b', '#b55fe6', '#00e6b8', '#ffb700'],
+                    backgroundColor: ['#FD4040', '#B08C9E', '#4A8CA8', '#C97A7C'],
                     borderWidth: 0
                 }]
             },
@@ -956,7 +956,7 @@ class TuesdayApp {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { position: 'bottom', labels: { color: '#6ba876', font: { size: 10, family: 'Share Tech Mono' } } }
+                    legend: { position: 'bottom', labels: { color: '#5E7076', font: { size: 10, family: 'Share Tech Mono' } } }
                 }
             }
         });
@@ -997,7 +997,7 @@ class TuesdayApp {
 
                 <h3 style="margin-top:1rem;">2. Multi-Agent Consensus Voting</h3>
                 <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin:0.5rem 0;">
-                    <thead><tr style="background:rgba(0,255,102,0.1);"><th style="padding:0.4rem;border:1px solid var(--matrix-card-border);text-align:left;">Agent</th><th style="padding:0.4rem;border:1px solid var(--matrix-card-border);">Vote</th><th style="padding:0.4rem;border:1px solid var(--matrix-card-border);">Confidence</th></tr></thead>
+                    <thead><tr style="background:rgba(62,122,132,0.12);"><th style="padding:0.4rem;border:1px solid var(--matrix-card-border);text-align:left;">Agent</th><th style="padding:0.4rem;border:1px solid var(--matrix-card-border);">Vote</th><th style="padding:0.4rem;border:1px solid var(--matrix-card-border);">Confidence</th></tr></thead>
                     <tbody>${consensusRows}</tbody>
                 </table>
 

@@ -54,8 +54,8 @@ class DigitalSOCTwin {
 
         this.ctx.clearRect(0, 0, w, h);
 
-        // Draw Matrix Grid Background
-        this.ctx.strokeStyle = 'rgba(0, 255, 102, 0.06)';
+        // Draw Grid Background
+        this.ctx.strokeStyle = 'rgba(62, 122, 132, 0.10)';
         this.ctx.lineWidth = 1;
         const gridSize = 40;
         for (let x = 0; x < w; x += gridSize) {
@@ -87,12 +87,12 @@ class DigitalSOCTwin {
             this.ctx.lineTo(x2, y2);
 
             if (conn.active) {
-                this.ctx.strokeStyle = '#ff3b3b';
+                this.ctx.strokeStyle = '#FD4040';
                 this.ctx.lineWidth = 2.5;
-                this.ctx.shadowColor = '#ff3b3b';
-                this.ctx.shadowBlur = 10;
+                this.ctx.shadowColor = '#FD4040';
+                this.ctx.shadowBlur = 8;
             } else {
-                this.ctx.strokeStyle = 'rgba(0, 255, 102, 0.2)';
+                this.ctx.strokeStyle = 'rgba(62, 122, 132, 0.28)';
                 this.ctx.lineWidth = 1.5;
                 this.ctx.shadowBlur = 0;
             }
@@ -106,7 +106,7 @@ class DigitalSOCTwin {
 
                 this.ctx.beginPath();
                 this.ctx.arc(px, py, 5, 0, Math.PI * 2);
-                this.ctx.fillStyle = '#ff0055';
+                this.ctx.fillStyle = '#EEA4A5';
                 this.ctx.fill();
             }
         });
@@ -116,10 +116,10 @@ class DigitalSOCTwin {
             const nx = node.x * w;
             const ny = node.y * h;
 
-            let color = '#00ff66'; // healthy Matrix Green
-            if (node.status === 'suspicious') color = '#ffb700';
-            if (node.status === 'compromised') color = '#ff3b3b';
-            if (node.status === 'isolated') color = '#00f3ff';
+            let color = '#3E7A84'; // healthy palette teal
+            if (node.status === 'suspicious') color = '#C97A7C';
+            if (node.status === 'compromised') color = '#FD4040';
+            if (node.status === 'isolated') color = '#4A8CA8';
 
             this.ctx.beginPath();
             this.ctx.arc(nx, ny, 24, 0, Math.PI * 2);
@@ -133,25 +133,25 @@ class DigitalSOCTwin {
                 const pulseRadius = 24 + Math.sin(tick * 4) * 6;
                 this.ctx.beginPath();
                 this.ctx.arc(nx, ny, pulseRadius, 0, Math.PI * 2);
-                this.ctx.strokeStyle = 'rgba(255, 59, 59, 0.8)';
+                this.ctx.strokeStyle = 'rgba(253, 64, 64, 0.45)';
                 this.ctx.stroke();
             }
 
             // Node core
             this.ctx.beginPath();
             this.ctx.arc(nx, ny, 16, 0, Math.PI * 2);
-            this.ctx.fillStyle = '#020a05';
+            this.ctx.fillStyle = '#ffffff';
             this.ctx.fill();
             this.ctx.strokeStyle = color;
             this.ctx.stroke();
 
             // Label text
-            this.ctx.fillStyle = '#d0f8d8';
+            this.ctx.fillStyle = '#1F2A2E';
             this.ctx.font = '700 11px "Share Tech Mono"';
             this.ctx.textAlign = 'center';
             this.ctx.fillText(node.name, nx, ny + 38);
 
-            this.ctx.fillStyle = '#6ba876';
+            this.ctx.fillStyle = '#5E7076';
             this.ctx.font = '10px "Share Tech Mono"';
             this.ctx.fillText(node.ip, nx, ny + 50);
         });

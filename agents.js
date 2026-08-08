@@ -24,14 +24,14 @@ window.TuesdayBackend = {
 class SOCAgentSwarm {
     constructor() {
         this.agents = {
-            coordinator: { id: 'agent-coord', name: 'SOC Coordinator', role: 'Swarm Orchestration & Task Decomposition', icon: 'fa-sitemap', color: '#00ff66', status: 'IDLE', confidence: 0, vote: null, logs: [] },
-            log:         { id: 'agent-log', name: 'Log Analysis', role: 'SIEM Correlation & Sigma Rules Engine', icon: 'fa-list-check', color: '#00f3ff', status: 'IDLE', confidence: 0, vote: null, logs: [] },
-            threatintel: { id: 'agent-intel', name: 'Threat Intelligence', role: 'IOC Enrichment (VT, AbuseIPDB, Shodan, MISP)', icon: 'fa-globe', color: '#b55fe6', status: 'IDLE', confidence: 0, vote: null, logs: [] },
-            malware:     { id: 'agent-malware', name: 'Malware Sandbox', role: 'YARA + Behavioral Sandbox Analysis', icon: 'fa-bug', color: '#ff007f', status: 'IDLE', confidence: 0, vote: null, logs: [] },
-            cloud:       { id: 'agent-cloud', name: 'Cloud Security', role: 'AWS/Azure IAM & CSPM Posture Audit', icon: 'fa-cloud', color: '#00e6b8', status: 'IDLE', confidence: 0, vote: null, logs: [] },
-            response:    { id: 'agent-response', name: 'Incident Response', role: 'Autonomous Containment & SOAR Playbooks', icon: 'fa-bolt', color: '#ff3b3b', status: 'IDLE', confidence: 0, vote: null, logs: [] },
-            compliance:  { id: 'agent-compliance', name: 'Compliance Audit', role: 'Regulatory Impact & Cryptographic Audit Trail', icon: 'fa-scale-balanced', color: '#ffb700', status: 'IDLE', confidence: 0, vote: null, logs: [] },
-            approval:    { id: 'agent-approval', name: 'Human Governance', role: 'Risk Threshold Gate & Override Control', icon: 'fa-user-shield', color: '#00ff66', status: 'IDLE', confidence: 0, vote: null, logs: [] }
+            coordinator: { id: 'agent-coord', name: 'SOC Coordinator', role: 'Swarm Orchestration & Task Decomposition', icon: 'fa-sitemap', color: '#3E7A84', status: 'IDLE', confidence: 0, vote: null, logs: [] },
+            log:         { id: 'agent-log', name: 'Log Analysis', role: 'SIEM Correlation & Sigma Rules Engine', icon: 'fa-list-check', color: '#4A8CA8', status: 'IDLE', confidence: 0, vote: null, logs: [] },
+            threatintel: { id: 'agent-intel', name: 'Threat Intelligence', role: 'IOC Enrichment (VT, AbuseIPDB, Shodan, MISP)', icon: 'fa-globe', color: '#B08C9E', status: 'IDLE', confidence: 0, vote: null, logs: [] },
+            malware:     { id: 'agent-malware', name: 'Malware Sandbox', role: 'YARA + Behavioral Sandbox Analysis', icon: 'fa-bug', color: '#EEA4A5', status: 'IDLE', confidence: 0, vote: null, logs: [] },
+            cloud:       { id: 'agent-cloud', name: 'Cloud Security', role: 'AWS/Azure IAM & CSPM Posture Audit', icon: 'fa-cloud', color: '#7FB3BB', status: 'IDLE', confidence: 0, vote: null, logs: [] },
+            response:    { id: 'agent-response', name: 'Incident Response', role: 'Autonomous Containment & SOAR Playbooks', icon: 'fa-bolt', color: '#FD4040', status: 'IDLE', confidence: 0, vote: null, logs: [] },
+            compliance:  { id: 'agent-compliance', name: 'Compliance Audit', role: 'Regulatory Impact & Cryptographic Audit Trail', icon: 'fa-scale-balanced', color: '#C97A7C', status: 'IDLE', confidence: 0, vote: null, logs: [] },
+            approval:    { id: 'agent-approval', name: 'Human Governance', role: 'Risk Threshold Gate & Override Control', icon: 'fa-user-shield', color: '#3E7A84', status: 'IDLE', confidence: 0, vote: null, logs: [] }
         };
 
         this.busListeners = [];
