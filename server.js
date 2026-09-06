@@ -251,34 +251,40 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
-  console.log('==================================================================');
-  console.log('  TUESDAY — AGENTIC AI SWARM v3.0');
-  console.log(`  Listening on: http://localhost:${PORT}`);
-  console.log('------------------------------------------------------------------');
-  llm.checkModel().then(probe => {
-    if (probe.ok && probe.present) {
-      console.log(`  ENGINE: LLM AGENTIC (model ${probe.model} on Ollama) ✓`);
-    } else if (probe.ok) {
-      console.log(`  ENGINE: LLM configured but "${probe.model}" not found.`);
-      console.log(`  Installed models: ${(probe.available || []).join(', ') || 'none'}`);
-      console.log(`  → Run: ollama pull ${probe.model}   (or set model in config.json)`);
-      console.log(`  → Until then, the RULE ENGINE fallback keeps the demo alive.`);
-    } else {
-      console.log(`  ENGINE: Ollama not reachable at ${probe.base}.`);
-      console.log('  → Install Ollama (ollama.com) + run: ollama pull qwen2.5:7b');
-      console.log('  → Until then, the RULE ENGINE fallback keeps the demo alive.');
-    }
-    if (probe.ok && probe.present) {
-      llm.warmModel().then(w => {
-        console.log(w.ok
-          ? `  WARMUP: ${probe.model} pre-loaded into memory ✓`
-          : `  WARMUP: skipped (${w.error || 'unavailable'}) — first run may be slower.`);
-      });
-    }
+if (process.env.VERCEL) {
+  module.exports = (req, res) => {
+    return server.emit('request', req, res);
+  };
+} else {
+  server.listen(PORT, () => {
     console.log('==================================================================');
+    console.log('  TUESDAY — AGENTIC AI SWARM v3.0');
+    console.log(`  Listening on: http://localhost:${PORT}`);
+    console.log('------------------------------------------------------------------');
+    llm.checkModel().then(probe => {
+      if (probe.ok && probe.present) {
+        console.log(`  ENGINE: LLM AGENTIC (model ${probe.model} on Ollama) ✓`);
+      } else if (probe.ok) {
+        console.log(`  ENGINE: LLM configured but "${probe.model}" not found.`);
+        console.log(`  Installed models: ${(probe.available || []).join(', ') || 'none'}`);
+        console.log(`  → Run: ollama pull ${probe.model}   (or set model in config.json)`);
+        console.log(`  → Until then, the RULE ENGINE fallback keeps the demo alive.`);
+      } else {
+        console.log(`  ENGINE: Ollama not reachable at ${probe.base}.`);
+        console.log('  → Install Ollama (ollama.com) + run: ollama pull qwen2.5:7b');
+        console.log('  → Until then, the RULE ENGINE fallback keeps the demo alive.');
+      }
+      if (probe.ok && probe.present) {
+        llm.warmModel().then(w => {
+          console.log(w.ok
+            ? `  WARMUP: ${probe.model} pre-loaded into memory ✓`
+            : `  WARMUP: skipped (${w.error || 'unavailable'}) — first run may be slower.`);
+        });
+      }
+      console.log('==================================================================');
+    });
+    setTimeout(() => {
+      console.log('  Open your browser at http://localhost:' + PORT);
+    }, 400);
   });
-  setTimeout(() => {
-    console.log('  Open your browser at http://localhost:' + PORT);
-  }, 400);
-});
+}
