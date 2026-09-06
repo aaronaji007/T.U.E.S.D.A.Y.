@@ -121,9 +121,23 @@ class TuesdayApp {
         const swarmStatus = document.getElementById('val-swarm-status');
 
         if (st.ok) {
-            const label = st.engine === 'llm' ? `LLM AGENTIC: ${st.model}` : 'RULE ENGINE (Ollama offline)';
+            const provName = (st.ollama && st.ollama.provider) ? st.ollama.provider.toUpperCase() : 'OLLAMA';
+            const label = st.engine === 'llm' ? `LLM AGENTIC: [${provName}] ${st.model}` : `RULE ENGINE (${provName} offline)`;
             if (pill) { pill.innerText = `ENGINE: ${label}`; pill.className = st.engine === 'llm' ? 'matrix-pill' : 'matrix-pill badge-matrix-amber'; }
             if (swarmStatus) swarmStatus.innerHTML = `<i class="fa-solid fa-circle pulse"></i> ${label}`;
+
+            const providerSelect = document.getElementById('llm-provider-select');
+            if (providerSelect && st.ollama && st.ollama.provider) {
+                providerSelect.value = st.ollama.provider;
+                providerSelect.onchange = async (e) => {
+                    await fetch('/api/settings/provider', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ provider: e.target.value })
+                    });
+                    await this.initBackendStatus(); // reload status
+                };
+            }
 
             try {
                 const mem = await fetch('/api/memory').then(r => r.json());

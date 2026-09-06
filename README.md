@@ -61,6 +61,26 @@ Currently, ingestion and containment use simulated adapter stubs (`lib/connector
 
 ---
 
+## ☁️ Cloud APIs vs Local Models (Vercel Support)
+
+TUESDAY is built to run 100% locally with Ollama for data privacy, but you can dynamically switch it to use **OpenAI** or **Google Gemini** APIs. This is especially useful if you want to deploy the dashboard to Vercel for public demos.
+
+You can switch the engine dynamically right from the **dropdown menu in the UI's top Command Center**.
+
+To use Cloud APIs, simply set the following environment variables (either in your terminal before running, or in your Vercel Dashboard):
+
+**For OpenAI:**
+- `OPENAI_API_KEY`: Your OpenAI API key.
+- `OPENAI_MODEL`: (Optional) Defaults to `gpt-4o-mini`.
+
+**For Google Gemini:**
+- `GEMINI_API_KEY`: Your Gemini API key.
+- `GEMINI_MODEL`: (Optional) Defaults to `gemini-1.5-flash`.
+
+*Note: If deployed to Vercel, TUESDAY automatically detects the cloud environment and defaults to API mode (prioritizing Gemini if `GEMINI_API_KEY` is found, otherwise OpenAI).*
+
+---
+
 ## 💻 Quick Start & Setup
 
 **Requirements:** Node.js 20+ and [Ollama](https://ollama.com/download)

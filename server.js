@@ -96,6 +96,15 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
+    // ---- API: settings/provider --------------------------------------------
+    if (pathname === '/api/settings/provider' && req.method === 'POST') {
+      const body = await readBody(req);
+      if (body.provider) {
+        llm.setProvider(body.provider);
+      }
+      return sendJSON(res, 200, { status: 'ok', provider: llm.getProvider() });
+    }
+
     // ---- API: health -------------------------------------------------------
     if (pathname === '/api/health' && req.method === 'GET') {
       const probe = await llm.checkModel();
