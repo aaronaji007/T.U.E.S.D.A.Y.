@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js for SOC Metrics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=3.5">
 </head>
 <body class="matrix-theme">
 
@@ -621,8 +621,264 @@
     </div>
     <!-- END SECTOR 1: DEFENSE -->
 
+    <!-- SECTOR 2: RED TEAM OFFENSE (ATTACK SUITE) STYLES -->
+    <style id="redteam-styles">
+      .sector-view-offense {
+        display: none;
+        background-color: #06080D !important;
+        background-image: 
+          radial-gradient(ellipse 70% 40% at 50% -10%, rgba(244, 63, 94, 0.12), transparent),
+          radial-gradient(ellipse 50% 35% at 85% 20%, rgba(245, 158, 11, 0.05), transparent),
+          radial-gradient(ellipse 40% 40% at 10% 80%, rgba(56, 189, 248, 0.04), transparent) !important;
+        background-attachment: fixed !important;
+        color: #F8FAFC !important;
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        padding: 2rem !important;
+        min-height: calc(100vh - 48px) !important;
+        box-sizing: border-box !important;
+      }
+      .sector-view-offense.active {
+        display: block !important;
+      }
+      .sector-view-offense .redteam-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        padding-bottom: 1.5rem !important;
+        margin-bottom: 2rem !important;
+      }
+      .sector-view-offense .logo {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.85rem !important;
+        font-size: 1.4rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.02em !important;
+        color: #F8FAFC !important;
+      }
+      .sector-view-offense .logo i {
+        color: #F43F5E !important;
+        font-size: 1.5rem !important;
+        filter: drop-shadow(0 0 10px rgba(244, 63, 94, 0.5)) !important;
+      }
+      .sector-view-offense .badge {
+        background: rgba(244, 63, 94, 0.12) !important;
+        border: 1px solid rgba(244, 63, 94, 0.35) !important;
+        color: #F43F5E !important;
+        padding: 0.2rem 0.65rem !important;
+        border-radius: 9999px !important;
+        font-size: 0.7rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.06em !important;
+      }
+      .sector-view-offense .soc-status-chip {
+        font-size: 0.8rem !important;
+        color: #94A3B8 !important;
+        background: rgba(13, 17, 26, 0.7) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        padding: 0.4rem 0.85rem !important;
+        border-radius: 6px !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+      }
+      .sector-view-offense .bench-panel {
+        background: rgba(13, 17, 26, 0.80) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.10) !important;
+        border-radius: 14px !important;
+        padding: 1.35rem 1.5rem !important;
+        margin-bottom: 2rem !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 0 0 1px rgba(255, 255, 255, 0.02) !important;
+      }
+      .sector-view-offense .bench-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 1.1rem !important;
+      }
+      .sector-view-offense .bench-title {
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        color: #F59E0B !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.6rem !important;
+        letter-spacing: -0.01em !important;
+      }
+      .sector-view-offense .bench-badge {
+        font-size: 0.72rem !important;
+        color: #7C8DB0 !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        background: rgba(255, 255, 255, 0.04) !important;
+        padding: 0.2rem 0.55rem !important;
+        border-radius: 6px !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      }
+      .sector-view-offense .btn-group {
+        display: flex !important;
+        gap: 0.65rem !important;
+        flex-wrap: wrap !important;
+      }
+      .sector-view-offense .btn-action {
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-size: 0.78rem !important;
+        font-weight: 600 !important;
+        padding: 0.55rem 0.95rem !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        text-decoration: none !important;
+        color: #94A3B8 !important;
+        background: #12151E !important;
+      }
+      .sector-view-offense .btn-action:active { transform: scale(0.98) !important; }
+      .sector-view-offense .btn-hostile { background: rgba(244, 63, 94, 0.12) !important; color: #F43F5E !important; border-color: rgba(244, 63, 94, 0.3) !important; }
+      .sector-view-offense .btn-hostile:hover { background: rgba(244, 63, 94, 0.22) !important; border-color: #F43F5E !important; box-shadow: 0 0 12px rgba(244, 63, 94, 0.25) !important; }
+      .sector-view-offense .btn-attention { background: rgba(245, 158, 11, 0.12) !important; color: #F59E0B !important; border-color: rgba(245, 158, 11, 0.3) !important; }
+      .sector-view-offense .btn-attention:hover { background: rgba(245, 158, 11, 0.2) !important; border-color: #F59E0B !important; box-shadow: 0 0 12px rgba(245, 158, 11, 0.2) !important; }
+      .sector-view-offense .btn-dark { background: #12151E !important; border-color: rgba(255, 255, 255, 0.08) !important; color: #94A3B8 !important; }
+      .sector-view-offense .btn-dark:hover { background: rgba(255, 255, 255, 0.08) !important; color: #F8FAFC !important; border-color: rgba(255, 255, 255, 0.16) !important; }
+      .sector-view-offense .btn-trust { background: rgba(0, 229, 153, 0.12) !important; color: #00E599 !important; border-color: rgba(0, 229, 153, 0.35) !important; }
+      .sector-view-offense .btn-trust:hover { background: rgba(0, 229, 153, 0.2) !important; border-color: #00E599 !important; box-shadow: 0 0 12px rgba(0, 229, 153, 0.25) !important; }
+
+      .sector-view-offense .redteam-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)) !important;
+        gap: 1.5rem !important;
+        margin-bottom: 2.5rem !important;
+      }
+      .sector-view-offense .redteam-card {
+        background: rgba(13, 17, 26, 0.80) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.10) !important;
+        border-radius: 14px !important;
+        padding: 1.4rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 0 0 1px rgba(255, 255, 255, 0.02) !important;
+      }
+      .sector-view-offense .redteam-card:hover {
+        border-color: rgba(244, 63, 94, 0.4) !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 0 16px rgba(244, 63, 94, 0.22) !important;
+      }
+      .sector-view-offense .card-track {
+        font-size: 0.68rem !important;
+        color: #F59E0B !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        margin-bottom: 0.5rem !important;
+        display: inline-block !important;
+        background: rgba(245, 158, 11, 0.12) !important;
+        padding: 0.15rem 0.5rem !important;
+        border-radius: 6px !important;
+        border: 1px solid rgba(245, 158, 11, 0.25) !important;
+      }
+      .sector-view-offense .card-title {
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        margin-bottom: 0.45rem !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.55rem !important;
+        color: #F8FAFC !important;
+      }
+      .sector-view-offense .card-title i { color: #F43F5E !important; }
+      .sector-view-offense .card-desc {
+        font-size: 0.82rem !important;
+        color: #94A3B8 !important;
+        line-height: 1.5 !important;
+        margin-bottom: 1.1rem !important;
+      }
+      .sector-view-offense .meta-box {
+        background: rgba(8, 10, 15, 0.7) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 6px !important;
+        padding: 0.85rem !important;
+        font-size: 0.75rem !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        color: #CBD5E1 !important;
+        margin-bottom: 1.25rem !important;
+        word-break: break-all !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.35rem !important;
+      }
+      .sector-view-offense .meta-box strong { color: #38BDF8 !important; }
+      .sector-view-offense .btn-launch {
+        background: #BE123C !important;
+        color: #F8FAFC !important;
+        border: 1px solid rgba(244, 63, 94, 0.5) !important;
+        padding: 0.7rem 1.1rem !important;
+        border-radius: 6px !important;
+        font-weight: 700 !important;
+        font-size: 0.8rem !important;
+        letter-spacing: 0.02em !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.6rem !important;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: 0 4px 14px rgba(244, 63, 94, 0.28) !important;
+      }
+      .sector-view-offense .btn-launch:hover {
+        background: #E11D48 !important;
+        box-shadow: 0 6px 20px rgba(244, 63, 94, 0.4) !important;
+        transform: translateY(-1px) !important;
+      }
+      .sector-view-offense .log-panel {
+        margin-top: 2.5rem !important;
+        background: rgba(13, 17, 26, 0.80) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.10) !important;
+        border-radius: 14px !important;
+        padding: 1.35rem 1.5rem !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+      }
+      .sector-view-offense .log-title {
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.03em !important;
+        margin-bottom: 0.85rem !important;
+        color: #F8FAFC !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.6rem !important;
+      }
+      .sector-view-offense .log-title i { color: #38BDF8 !important; }
+      .sector-view-offense #redteamLogOutput {
+        background: rgba(6, 8, 13, 0.9) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 6px !important;
+        padding: 1rem 1.25rem !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.78rem !important;
+        height: 190px !important;
+        overflow-y: auto !important;
+        color: #6EE7B7 !important;
+        line-height: 1.6 !important;
+        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6) !important;
+        white-space: pre-wrap !important;
+      }
+    </style>
+
     <!-- SECTOR 2: RED TEAM OFFENSE (ATTACK SUITE) -->
-    <div class="sector-view-offense" id="sector-view-offense">
+    <div class="sector-view-offense" id="sector-view-offense" style="display: none;">
         <header class="redteam-header">
             <div class="logo">
                 <i class="fa-solid fa-skull-crossbones"></i>
@@ -672,9 +928,92 @@
             </div>
         </div>
 
-        <!-- Scenario Cards Grid -->
+        <!-- Pre-rendered Scenario Cards Grid -->
         <div class="redteam-grid" id="scenariosGrid">
-            <!-- Populated via app.js -->
+            <!-- SIM-004 -->
+            <div class="redteam-card">
+                <div>
+                    <div class="card-track">Cybersecurity & Privacy (Track 4)</div>
+                    <div class="card-title"><i class="fa-solid fa-crosshairs"></i> Covert Telemetry Harvester & Browser Credential Spyware</div>
+                    <div class="card-desc">A background utility disguises itself as an analytics daemon while harvesting local `.env` API keys, developer SSH tokens, and browser session cookies to beacon out to an unauthorized C2 collector.</div>
+                    <div class="meta-box">
+                        <div><strong>TARGET:</strong> DEV-WORKSTATION-09 (192.168.20.14)</div>
+                        <div><strong>IOC:</strong> 185.220.101.99</div>
+                        <div><strong>MITRE:</strong> T1555 (Credentials from Password Stores) / T1041 (Exfiltration Over C2)</div>
+                    </div>
+                </div>
+                <button class="btn-launch" onclick="launchRedteamAttack('privacy_harvester', 'Covert Telemetry Harvester & Browser Credential Spyware')">
+                    <i class="fa-solid fa-satellite-dish"></i> INJECT ATTACK INTO SENTINEL
+                </button>
+            </div>
+
+            <!-- SIM-001 -->
+            <div class="redteam-card">
+                <div>
+                    <div class="card-track">Defense & Sandboxing</div>
+                    <div class="card-title"><i class="fa-solid fa-crosshairs"></i> LockBit 3.0 Ransomware Outbreak Attempt</div>
+                    <div class="card-desc">Malicious payload initiates LSASS dumping and triggers system shadow-copy deletion before staging AES-256 file encryption across the finance enclave.</div>
+                    <div class="meta-box">
+                        <div><strong>TARGET:</strong> FIN-SERVER-04 (192.168.10.45)</div>
+                        <div><strong>IOC:</strong> 185.220.101.5</div>
+                        <div><strong>MITRE:</strong> T1486 (Data Encrypted for Impact) / T1490 (Inhibit System Recovery)</div>
+                    </div>
+                </div>
+                <button class="btn-launch" onclick="launchRedteamAttack('ransomware_lockbit', 'LockBit 3.0 Ransomware Outbreak Attempt')">
+                    <i class="fa-solid fa-satellite-dish"></i> INJECT ATTACK INTO SENTINEL
+                </button>
+            </div>
+
+            <!-- SIM-005 -->
+            <div class="redteam-card">
+                <div>
+                    <div class="card-track">Surveillance Transparency & Network Defense</div>
+                    <div class="card-title"><i class="fa-solid fa-crosshairs"></i> Stealthy Covert DNS Tunneling & Data Siphon</div>
+                    <div class="card-desc">Adversary encodes sensitive internal database dumps into base64 subdomains, transmitting chunks via spoofed UDP DNS queries to bypass standard port-based firewalls.</div>
+                    <div class="meta-box">
+                        <div><strong>TARGET:</strong> RND-NODE-02 (192.168.30.18)</div>
+                        <div><strong>IOC:</strong> 193.142.146.88</div>
+                        <div><strong>MITRE:</strong> T1071.004 (DNS Communication Channel) / T1048 (Exfiltration Over Alternative Protocol)</div>
+                    </div>
+                </div>
+                <button class="btn-launch" onclick="launchRedteamAttack('dns_tunnel_c2', 'Stealthy Covert DNS Tunneling & Data Siphon')">
+                    <i class="fa-solid fa-satellite-dish"></i> INJECT ATTACK INTO SENTINEL
+                </button>
+            </div>
+
+            <!-- SIM-003 -->
+            <div class="redteam-card">
+                <div>
+                    <div class="card-track">Defense & Sandboxing / HITL Governance</div>
+                    <div class="card-title"><i class="fa-solid fa-crosshairs"></i> APT SUNBURST Supply Chain Trojan on Domain Controller</div>
+                    <div class="card-desc">Backdoored software update binary injected on core Domain Controller. Demonstrates Sentinel's Human-in-the-Loop governance: high risk on critical infrastructure stops autonomous host termination and forces human escalation.</div>
+                    <div class="meta-box">
+                        <div><strong>TARGET:</strong> DC-PRIMARY-01 (192.168.1.10)</div>
+                        <div><strong>IOC:</strong> 45.154.255.87</div>
+                        <div><strong>MITRE:</strong> T1195.002 (Supply Chain Compromise) / T1558.001 (Golden Ticket)</div>
+                    </div>
+                </div>
+                <button class="btn-launch" onclick="launchRedteamAttack('apt_supply_chain', 'APT SUNBURST Supply Chain Trojan on Domain Controller')">
+                    <i class="fa-solid fa-satellite-dish"></i> INJECT ATTACK INTO SENTINEL
+                </button>
+            </div>
+
+            <!-- SIM-002 -->
+            <div class="redteam-card">
+                <div>
+                    <div class="card-track">Cloud Defense</div>
+                    <div class="card-title"><i class="fa-solid fa-crosshairs"></i> AWS Cloud Credential Compromise & S3 Mass-Download</div>
+                    <div class="card-desc">Compromised developer credentials used to assume broad IAM role and stage automated bulk downloads from sensitive S3 data repositories.</div>
+                    <div class="meta-box">
+                        <div><strong>TARGET:</strong> AWS-S3-PROD-LOGS (cloud-aws)</div>
+                        <div><strong>IOC:</strong> 193.142.146.35</div>
+                        <div><strong>MITRE:</strong> T1530 (Data from Cloud Storage) / T1078.004 (Cloud Accounts)</div>
+                    </div>
+                </div>
+                <button class="btn-launch" onclick="launchRedteamAttack('cloud_sts_exfil', 'AWS Cloud Credential Compromise & S3 Mass-Download')">
+                    <i class="fa-solid fa-satellite-dish"></i> INJECT ATTACK INTO SENTINEL
+                </button>
+            </div>
         </div>
 
         <!-- Real-time Adversary Logs -->

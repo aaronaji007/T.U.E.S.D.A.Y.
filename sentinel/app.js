@@ -1758,6 +1758,8 @@ function initSectorSwitcher() {
 
     if (window.location.hash === '#offense' || new URLSearchParams(window.location.search).get('sector') === 'offense') {
         switchSector('offense');
+    } else {
+        switchSector('defense');
     }
 
     window.addEventListener('message', (event) => {
