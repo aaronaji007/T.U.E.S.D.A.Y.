@@ -1,0 +1,21 @@
+{
+  "name": "tuesday",
+  "version": "3.0.0",
+  "description": "Project TUESDAY: Tactical Edge AI Sovereign Cyber Defense Swarm & Adversary Simulation",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'Build complete'"
+  },
+  "keywords": [
+    "cybersecurity",
+    "ai-agents",
+    "soc",
+    "soar",
+    "redteam",
+    "sentinel",
+    "mitre-attack"
+  ],
+  "author": "Aaron Aji",
+  "license": "MIT"
+}
