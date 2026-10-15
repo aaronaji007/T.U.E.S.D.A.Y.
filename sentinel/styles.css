@@ -1586,16 +1586,268 @@ body.matrix-theme {
 .sector-view-offense {
     display: none;
     width: 100%;
-    height: calc(100vh - 48px);
+    min-height: calc(100vh - 48px);
+    background-color: #06080D;
+    background-image: 
+        radial-gradient(ellipse 70% 40% at 50% -10%, rgba(244, 63, 94, 0.12), transparent),
+        radial-gradient(ellipse 50% 35% at 85% 20%, rgba(245, 158, 11, 0.05), transparent),
+        radial-gradient(ellipse 40% 40% at 10% 80%, rgba(56, 189, 248, 0.04), transparent);
+    background-attachment: fixed;
+    color: #F8FAFC;
+    padding: 1.5rem 2rem 3rem 2rem;
+    box-sizing: border-box;
 }
 
 .sector-view-offense.active {
     display: block;
 }
 
-.redteam-frame {
-    width: 100%;
-    height: calc(100vh - 48px);
-    border: none;
-    background: #06080D;
+.sector-view-offense .redteam-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+.sector-view-offense .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #F8FAFC;
+}
+
+.sector-view-offense .logo i {
+    color: #F43F5E;
+    font-size: 1.4rem;
+    filter: drop-shadow(0 0 10px rgba(244, 63, 94, 0.5));
+}
+
+.sector-view-offense .badge {
+    background: rgba(244, 63, 94, 0.12);
+    border: 1px solid rgba(244, 63, 94, 0.35);
+    color: #F43F5E;
+    padding: 0.2rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.sector-view-offense .soc-status-chip {
+    font-size: 0.78rem;
+    color: #94A3B8;
+    background: rgba(13, 17, 26, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    font-family: var(--font-mono, monospace);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sector-view-offense .bench-panel {
+    background: rgba(13, 17, 26, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+    margin-bottom: 2rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.sector-view-offense .bench-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.sector-view-offense .bench-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #F59E0B;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.sector-view-offense .bench-badge {
+    font-size: 0.72rem;
+    color: #7C8DB0;
+    font-family: var(--font-mono, monospace);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sector-view-offense .btn-group {
+    display: flex;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.sector-view-offense .btn-action {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.55rem 0.95rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: #94A3B8;
+    background: #12151E;
+}
+
+.sector-view-offense .btn-action:active { transform: scale(0.98); }
+.sector-view-offense .btn-hostile { background: rgba(244, 63, 94, 0.12); color: #F43F5E; border-color: rgba(244, 63, 94, 0.3); }
+.sector-view-offense .btn-hostile:hover { background: rgba(244, 63, 94, 0.22); border-color: #F43F5E; box-shadow: 0 0 12px rgba(244, 63, 94, 0.25); }
+.sector-view-offense .btn-attention { background: rgba(245, 158, 11, 0.12); color: #F59E0B; border-color: rgba(245, 158, 11, 0.3); }
+.sector-view-offense .btn-attention:hover { background: rgba(245, 158, 11, 0.2); border-color: #F59E0B; }
+.sector-view-offense .btn-dark { background: #12151E; border-color: rgba(255, 255, 255, 0.08); color: #94A3B8; }
+.sector-view-offense .btn-dark:hover { background: rgba(255, 255, 255, 0.08); color: #F8FAFC; }
+.sector-view-offense .btn-trust { background: rgba(0, 229, 153, 0.12); color: #00E599; border-color: rgba(0, 229, 153, 0.35); }
+.sector-view-offense .btn-trust:hover { background: rgba(0, 229, 153, 0.2); border-color: #00E599; }
+
+.sector-view-offense .redteam-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.sector-view-offense .redteam-card {
+    background: rgba(13, 17, 26, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.25s ease;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.sector-view-offense .redteam-card:hover {
+    border-color: rgba(244, 63, 94, 0.45);
+    box-shadow: 0 0 16px rgba(244, 63, 94, 0.15);
+}
+
+.sector-view-offense .card-track {
+    font-size: 0.68rem;
+    color: #F59E0B;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    background: rgba(245, 158, 11, 0.12);
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.sector-view-offense .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: #F8FAFC;
+}
+
+.sector-view-offense .card-title i { color: #F43F5E; }
+
+.sector-view-offense .card-desc {
+    font-size: 0.82rem;
+    color: #94A3B8;
+    line-height: 1.5;
+    margin-bottom: 1.1rem;
+}
+
+.sector-view-offense .meta-box {
+    background: rgba(8, 10, 15, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 0.85rem;
+    font-size: 0.75rem;
+    font-family: var(--font-mono, monospace);
+    color: #CBD5E1;
+    margin-bottom: 1.25rem;
+    word-break: break-all;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.sector-view-offense .meta-box strong { color: #38BDF8; }
+
+.sector-view-offense .btn-launch {
+    background: #BE123C;
+    color: #F8FAFC;
+    border: 1px solid rgba(244, 63, 94, 0.5);
+    padding: 0.7rem 1.1rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(244, 63, 94, 0.28);
+}
+
+.sector-view-offense .btn-launch:hover {
+    background: #E11D48;
+    box-shadow: 0 6px 20px rgba(244, 63, 94, 0.4);
+    transform: translateY(-1px);
+}
+
+.sector-view-offense .log-panel {
+    background: rgba(13, 17, 26, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.sector-view-offense .log-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.85rem;
+    color: #F8FAFC;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.sector-view-offense .log-title i { color: #38BDF8; }
+
+.sector-view-offense #redteamLogOutput {
+    background: rgba(6, 8, 13, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.78rem;
+    height: 190px;
+    overflow-y: auto;
+    color: #6EE7B7;
+    line-height: 1.6;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
+    white-space: pre-wrap;
 }

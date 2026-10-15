@@ -623,7 +623,65 @@
 
     <!-- SECTOR 2: RED TEAM OFFENSE (ATTACK SUITE) -->
     <div class="sector-view-offense" id="sector-view-offense">
-        <iframe src="/redteam/index.html" class="redteam-frame" id="redteam-frame" title="TUESDAY RedTeam Adversary Attack Suite"></iframe>
+        <header class="redteam-header">
+            <div class="logo">
+                <i class="fa-solid fa-skull-crossbones"></i>
+                <span>TUESDAY RedTeam</span>
+                <span class="badge">Adversary Simulator</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+                <button onclick="switchSector('defense')" class="btn-action btn-trust" style="cursor: pointer; padding: 0.45rem 1rem; border-radius: 6px; font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-shield-halved"></i> SWITCH TO BLUE TEAM · DEFENSE SOC ➔
+                </button>
+                <div class="soc-status-chip">
+                    <i class="fa-solid fa-satellite-dish" style="color: #38BDF8;"></i>
+                    <span>SENTINEL DEFENSE SOC:</span>
+                    <span style="color: #00E599; font-weight: bold;">[CONNECTED]</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tactical Weaponization Bench (Real Host Drills) -->
+        <div class="bench-panel">
+            <div class="bench-header">
+                <h3 class="bench-title"><i class="fa-solid fa-bolt"></i> Tactical Weaponization Bench (Host Drills)</h3>
+                <span class="bench-badge">Track 4: Sovereign Cybersecurity & Privacy</span>
+            </div>
+            <div class="btn-group">
+                <button class="btn-action btn-hostile" onclick="triggerLiveDrill('privacy', 'Privacy Harvester (.env secrets reading + C2 beacon)')">
+                    <i class="fa-solid fa-user-secret"></i> 1. Run Live Privacy Harvester
+                </button>
+                <button class="btn-action btn-dark" onclick="triggerLiveDrill('privacy_clean', 'Clean Mock Secrets in Sandbox')">
+                    <i class="fa-solid fa-broom"></i> Clean Sandbox
+                </button>
+                <button class="btn-action btn-attention" onclick="triggerLiveDrill('registry_plant', 'Plant Canary Autostart Key (HKCU Run)')">
+                    <i class="fa-solid fa-key"></i> 2. Plant Registry Hook
+                </button>
+                <button class="btn-action btn-dark" onclick="triggerLiveDrill('registry_clean', 'Clean Canary Registry Key')">
+                    <i class="fa-solid fa-trash"></i> Clean Registry
+                </button>
+                <button class="btn-action btn-hostile" onclick="triggerLiveDrill('ransomware', 'LockBit File Rename & Canary Encryption')">
+                    <i class="fa-solid fa-file-shield"></i> 3. Run Ransomware Drill
+                </button>
+                <button class="btn-action btn-dark" onclick="triggerLiveDrill('ransomware_clean', 'Clean Ransomware Canary Files')">
+                    <i class="fa-solid fa-eraser"></i> Clean Canaries
+                </button>
+                <button class="btn-action btn-trust" onclick="switchSector('defense')">
+                    <i class="fa-solid fa-arrow-left"></i> Return to Defense SOC
+                </button>
+            </div>
+        </div>
+
+        <!-- Scenario Cards Grid -->
+        <div class="redteam-grid" id="scenariosGrid">
+            <!-- Populated via app.js -->
+        </div>
+
+        <!-- Real-time Adversary Logs -->
+        <div class="log-panel">
+            <div class="log-title"><i class="fa-solid fa-terminal"></i> Adversary Telemetry Stream</div>
+            <div id="redteamLogOutput">>_ System initialized. Select an attack scenario or live host drill above...</div>
+        </div>
     </div>
 
     <!-- Scripts -->

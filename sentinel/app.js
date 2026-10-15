@@ -1741,6 +1741,7 @@ function initSectorSwitcher() {
             viewDefense.style.display = 'none';
             viewOffense.classList.add('active');
             viewOffense.style.display = 'block';
+            loadRedteamScenarios();
             try { history.replaceState(null, '', '#offense'); } catch (e) {}
         } else {
             btnOffense.classList.remove('active');
@@ -1771,6 +1772,98 @@ function initSectorSwitcher() {
 
     window.switchSector = switchSector;
 }
+
+// ==========================================================================
+// RED TEAM OFFENSE CONTROLLER (Native In-DOM Execution)
+// ==========================================================================
+
+function redteamLog(msg) {
+    const el = document.getElementById('redteamLogOutput');
+    if (!el) return;
+    const ts = new Date().toLocaleTimeString();
+    el.innerHTML += `\n[${ts}] ${msg}`;
+    el.scrollTop = el.scrollHeight;
+}
+
+async function triggerLiveDrill(drillType, drillName) {
+    redteamLog(`[LIVE DRILL] Initiating "${drillName}" on host system...`);
+    try {
+        const res = await fetch('/api/drills/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ drillType })
+        });
+        const data = await res.json();
+        if (data.ok) {
+            redteamLog(`[LIVE DRILL SUCCESS] "${drillName}" executed! Check Sentinel SOC for live detection.`);
+        } else {
+            redteamLog(`[LIVE DRILL ERROR] ${data.error || 'Drill execution failed'}`);
+        }
+    } catch (e) {
+        redteamLog(`[LIVE DRILL FAILED] ${e.message}`);
+    }
+}
+
+async function loadRedteamScenarios() {
+    const grid = document.getElementById('scenariosGrid');
+    if (!grid || grid.children.length > 0) return;
+    try {
+        const res = await fetch('/api/scenarios');
+        const data = await res.json();
+        if (!data.scenarios) return;
+
+        grid.innerHTML = '';
+        Object.entries(data.scenarios).forEach(([key, s]) => {
+            const card = document.createElement('div');
+            card.className = 'redteam-card';
+            card.innerHTML = `
+                <div>
+                    <div class="card-track">${s.track || 'ADVANCED THREAT'}</div>
+                    <div class="card-title"><i class="fa-solid fa-crosshairs"></i> ${s.title}</div>
+                    <div class="card-desc">${s.description}</div>
+                    <div class="meta-box">
+                        <div><strong>TARGET:</strong> ${s.targetHost}</div>
+                        <div><strong>IOC:</strong> ${s.ioc}</div>
+                        <div><strong>MITRE:</strong> ${s.mitreTtp}</div>
+                    </div>
+                </div>
+                <button class="btn-launch" onclick="launchRedteamAttack('${key}', '${s.title.replace(/'/g, "\\'")}')">
+                    <i class="fa-solid fa-satellite-dish"></i> INJECT ATTACK INTO SENTINEL
+                </button>
+            `;
+            grid.appendChild(card);
+        });
+    } catch (e) {
+        redteamLog('Failed to fetch scenarios: ' + e.message);
+    }
+}
+
+async function launchRedteamAttack(key, title) {
+    redteamLog(`[ATTACK INGESTION] Dispatching scenario: "${title}" -> Sentinel SOC...`);
+    try {
+        const res = await fetch('/api/attack/launch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scenarioKey: key })
+        });
+        const data = await res.json();
+        if (data.ok) {
+            const r = data.sentinelResponse || {};
+            redteamLog(`[DEFENDER REACTION] Sentinel investigated "${title}" | Status: ${r.status || 'CONTAINED'} | Risk Score: ${r.riskScore || 95}/100`);
+            if (window.AudioEngine && window.AudioEngine.playAlertSound) {
+                window.AudioEngine.playAlertSound();
+            }
+        } else {
+            redteamLog(`[ERROR] ${data.error || 'Attack launch failed'}`);
+        }
+    } catch (e) {
+        redteamLog(`[TRANSMISSION FAILED] ${e.message}`);
+    }
+}
+
+window.triggerLiveDrill = triggerLiveDrill;
+window.launchRedteamAttack = launchRedteamAttack;
+window.loadRedteamScenarios = loadRedteamScenarios;
 
 document.addEventListener('DOMContentLoaded', () => {
     initSectorSwitcher();
