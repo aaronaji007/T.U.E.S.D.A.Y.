@@ -17,9 +17,29 @@
 </head>
 <body class="matrix-theme">
 
-    <div class="matrix-app-container">
-        <!-- Top Header -->
-        <header class="matrix-navbar">
+    <!-- TACTICAL SECTOR SWITCHER (DEFENSE vs OFFENSE) -->
+    <div class="tactical-sector-bar">
+        <div class="sector-controls">
+            <button class="sector-tab-btn active sector-defense" id="sector-btn-defense" title="Switch to Sentinel Defense SOC">
+                <i class="fa-solid fa-shield-halved"></i> BLUE TEAM · DEFENSE SOC
+                <span class="sector-status-pill green">ACTIVE</span>
+            </button>
+            <button class="sector-tab-btn sector-offense" id="sector-btn-offense" title="Switch to RedTeam Adversary Attack Suite">
+                <i class="fa-solid fa-skull-crossbones"></i> RED TEAM · ATTACK SUITE
+                <span class="sector-status-pill red">OFFENSE</span>
+            </button>
+        </div>
+        <div class="sector-telemetry">
+            <span class="sector-tag"><i class="fa-solid fa-cloud"></i> VERCEL CLUSTER</span>
+            <span class="sector-tag"><i class="fa-solid fa-bolt" style="color:var(--signal-emerald);"></i> 2-SECTOR PORTAL</span>
+        </div>
+    </div>
+
+    <!-- SECTOR 1: BLUE TEAM DEFENSE (SENTINEL) -->
+    <div class="sector-view-defense active" id="sector-view-defense">
+        <div class="matrix-app-container">
+            <!-- Top Header -->
+            <header class="matrix-navbar">
             <div class="nav-brand">
                 <div class="matrix-logo">
                     <i class="fa-solid fa-calendar-days"></i>
@@ -597,6 +617,13 @@
                 <button class="btn btn-matrix-green" id="btn-download-md"><i class="fa-solid fa-download"></i> DOWNLOAD MARKDOWN</button>
             </div>
         </div>
+    </div>
+    </div>
+    <!-- END SECTOR 1: DEFENSE -->
+
+    <!-- SECTOR 2: RED TEAM OFFENSE (ATTACK SUITE) -->
+    <div class="sector-view-offense" id="sector-view-offense">
+        <iframe src="/redteam/index.html" class="redteam-frame" id="redteam-frame" title="TUESDAY RedTeam Adversary Attack Suite"></iframe>
     </div>
 
     <!-- Scripts -->

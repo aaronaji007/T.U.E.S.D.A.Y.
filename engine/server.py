@@ -27,12 +27,14 @@ from engine.inference import inference_engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Startup: start cluster discovery. Shutdown: stop it cleanly."""
-    print("[TUESDAY] Starting cluster discovery...")
-    cluster_manager.start()
+    """Startup: start cluster discovery if not in serverless. Shutdown: stop it cleanly."""
+    if not os.environ.get("VERCEL"):
+        print("[TUESDAY] Starting cluster discovery...")
+        cluster_manager.start()
     yield
-    print("[TUESDAY] Shutting down cluster discovery...")
-    cluster_manager.stop()
+    if not os.environ.get("VERCEL"):
+        print("[TUESDAY] Shutting down cluster discovery...")
+        cluster_manager.stop()
 
 
 # =============================================================================
@@ -572,11 +574,122 @@ async def host_stream():
 
 
 # =============================================================================
-# STATIC FILES (Sentinel UI)
+# REDTEAM ATTACK SIMULATOR & PURPLE TEAM INTEGRATION
+# =============================================================================
+
+from redteam.scenarios import SCENARIOS
+from redteam.drills import privacy_harvester_drill, ransomware_canary_drill, registry_persistence_drill
+
+class DrillPayload(BaseModel):
+    drillType: str
+
+class LaunchPayload(BaseModel):
+    scenarioKey: Optional[str] = None
+    customScenario: Optional[Dict[str, Any]] = None
+
+@app.get("/api/scenarios")
+def get_scenarios():
+    """Return all purple-team scenarios from RedTeam."""
+    return {"ok": True, "scenarios": SCENARIOS}
+
+@app.post("/api/drills/run")
+async def run_drill(payload: DrillPayload):
+    """Run an adversary canary drill."""
+    drill = payload.drillType
+    if drill == "privacy":
+        res = privacy_harvester_drill.run()
+        return {"ok": True, "drill": "privacy_harvester", "result": res}
+    elif drill == "privacy_clean":
+        res = privacy_harvester_drill.clean_sandbox()
+        return {"ok": True, "drill": "privacy_clean", "result": res}
+    elif drill == "ransomware":
+        res = ransomware_canary_drill.run()
+        return {"ok": True, "drill": "ransomware_canary", "result": res}
+    elif drill == "ransomware_clean":
+        res = ransomware_canary_drill.clean_canary()
+        return {"ok": True, "drill": "ransomware_clean", "result": res}
+    elif drill == "registry_plant":
+        res = registry_persistence_drill.plant_canary()
+        return {"ok": True, "drill": "registry_plant", "result": res}
+    elif drill == "registry_clean":
+        res = registry_persistence_drill.clean_canary()
+        return {"ok": True, "drill": "registry_clean", "result": res}
+    else:
+        raise HTTPException(status_code=400, detail=f"Unknown drillType: {drill}")
+
+@app.post("/api/attack/launch")
+async def launch_attack(payload: LaunchPayload):
+    """
+    Launch an attack drill from RedTeam directly into Sentinel's
+    detection and multi-agent investigation pipeline.
+    """
+    scenario = None
+    if payload.scenarioKey and payload.scenarioKey in SCENARIOS:
+        scenario = SCENARIOS[payload.scenarioKey]
+    elif payload.customScenario:
+        scenario = payload.customScenario
+
+    if not scenario:
+        raise HTTPException(status_code=400, detail="Scenario not found")
+
+    alert_payload = {
+        "id": scenario.get("id") or f"SIM-{hex(int(time.time()))[2:].upper()}",
+        "title": scenario.get("title"),
+        "source": scenario.get("source"),
+        "targetHost": scenario.get("targetHost", "DESKTOP-TUESDAY"),
+        "host": scenario.get("targetHost", "DESKTOP-TUESDAY"),
+        "ioc": scenario.get("ioc"),
+        "payload": scenario.get("payload")
+    }
+
+    # Broadcast initial detection to live Sentinel UIs immediately
+    for q in list(host_event_queues):
+        try:
+            q.put_nowait({"event": "threat_detected", "data": alert_payload})
+        except Exception:
+            pass
+
+    loop = asyncio.get_running_loop()
+    def live_broadcast(agent: str, msg: str, lvl: str):
+        p = {
+            "type": "log",
+            "agent": agent,
+            "message": msg,
+            "level": lvl,
+            "timestamp": time.strftime("%H:%M:%S")
+        }
+        for q in list(host_event_queues):
+            try:
+                loop.call_soon_threadsafe(q.put_nowait, {"event": "agent_log", "data": p})
+            except Exception:
+                pass
+
+    sentinel_res = await asyncio.to_thread(orchestrator.run_investigation, alert_payload, live_broadcast)
+
+    for q in list(host_event_queues):
+        try:
+            q.put_nowait({"event": "incident_result", "data": sentinel_res})
+        except Exception:
+            pass
+
+    return {
+        "ok": True,
+        "message": f"Attack drill '{scenario.get('title')}' injected into Sentinel",
+        "alert": alert_payload,
+        "sentinelResponse": sentinel_res
+    }
+
+
+# =============================================================================
+# STATIC FILES (Sentinel UI & RedTeam Console)
 # =============================================================================
 
 import os
 from fastapi.staticfiles import StaticFiles
+
+_redteam_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "redteam")
+if os.path.exists(_redteam_dir):
+    app.mount("/redteam", StaticFiles(directory=_redteam_dir, html=True), name="redteam")
 
 _sentinel_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "sentinel")
 if os.path.exists(_sentinel_dir):

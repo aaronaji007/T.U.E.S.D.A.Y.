@@ -349,10 +349,15 @@
       TUESDAY RedTeam
       <span class="badge">Adversary Simulator</span>
     </div>
-    <div class="soc-status-chip">
-      <i class="fa-solid fa-satellite-dish" style="color: var(--cyan);"></i>
-      <span>TARGET SENTINEL: <strong style="color: #F8FAFC;">http://localhost:8090</strong></span>
-      <span style="color: var(--emerald); font-weight: bold;">[ACTIVE]</span>
+    <div style="display: flex; align-items: center; gap: 0.85rem;">
+      <button onclick="goToDefense()" class="btn-action" style="background: rgba(0, 229, 153, 0.12); color: #00E599; border: 1px solid rgba(0, 229, 153, 0.35); cursor: pointer; padding: 0.4rem 0.9rem; border-radius: 6px; font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease;">
+        <i class="fa-solid fa-shield-halved"></i> BLUE TEAM · DEFENSE SOC ➔
+      </button>
+      <div class="soc-status-chip">
+        <i class="fa-solid fa-satellite-dish" style="color: var(--cyan);"></i>
+        <span>SENTINEL SOC: <strong style="color: #F8FAFC;">UNIFIED PORTAL</strong></span>
+        <span style="color: var(--emerald); font-weight: bold;">[ACTIVE]</span>
+      </div>
     </div>
   </header>
 
@@ -381,9 +386,9 @@
       <button class="btn-action btn-dark" onclick="triggerLiveDrill('ransomware_clean', 'Clean Ransomware Canary Files')">
         <i class="fa-solid fa-eraser"></i> Clean Canaries
       </button>
-      <a href="http://localhost:8090" target="_blank" class="btn-action btn-trust">
+      <button onclick="goToDefense()" class="btn-action btn-trust">
         <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Sentinel SOC (:8090)
-      </a>
+      </button>
     </div>
   </div>
 
@@ -404,6 +409,14 @@
       const ts = new Date().toLocaleTimeString();
       logOutput.innerHTML += `\n[${ts}] ${msg}`;
       logOutput.scrollTop = logOutput.scrollHeight;
+    }
+
+    function goToDefense() {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ action: 'switch_to_defense', sector: 'defense' }, '*');
+      } else {
+        window.location.href = '/#defense';
+      }
     }
 
     async function triggerLiveDrill(drillType, drillName) {

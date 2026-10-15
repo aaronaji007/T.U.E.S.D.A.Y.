@@ -7,7 +7,11 @@ import os
 import json
 from typing import Dict, Any, List, Optional
 
-DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sentinel", "data", "store.json")
+SEED_DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sentinel", "data", "store.json")
+if os.environ.get("VERCEL"):
+    DATA_PATH = "/tmp/store.json"
+else:
+    DATA_PATH = SEED_DATA_PATH
 
 class Store:
     def __init__(self, file_path: str = DATA_PATH):
@@ -29,8 +33,11 @@ class Store:
 
     def load(self):
         try:
-            if os.path.exists(self.file_path):
-                with open(self.file_path, "r", encoding="utf-8") as f:
+            target = self.file_path
+            if not os.path.exists(target) and os.path.exists(SEED_DATA_PATH):
+                target = SEED_DATA_PATH
+            if os.path.exists(target):
+                with open(target, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     self.memory.update(data)
         except Exception as e:

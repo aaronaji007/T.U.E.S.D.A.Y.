@@ -1725,6 +1725,55 @@ class TuesdayApp {
     }
 }
 
+// Tactical Operations Sector Switching (Defense vs Offense)
+function initSectorSwitcher() {
+    const btnDefense = document.getElementById('sector-btn-defense');
+    const btnOffense = document.getElementById('sector-btn-offense');
+    const viewDefense = document.getElementById('sector-view-defense');
+    const viewOffense = document.getElementById('sector-view-offense');
+
+    if (!btnDefense || !btnOffense || !viewDefense || !viewOffense) return;
+
+    function switchSector(sector) {
+        if (sector === 'offense') {
+            btnDefense.classList.remove('active');
+            btnOffense.classList.add('active');
+            viewDefense.style.display = 'none';
+            viewOffense.classList.add('active');
+            viewOffense.style.display = 'block';
+            try { history.replaceState(null, '', '#offense'); } catch (e) {}
+        } else {
+            btnOffense.classList.remove('active');
+            btnDefense.classList.add('active');
+            viewOffense.classList.remove('active');
+            viewOffense.style.display = 'none';
+            viewDefense.style.display = 'block';
+            try { history.replaceState(null, '', '#defense'); } catch (e) {}
+        }
+    }
+
+    btnDefense.addEventListener('click', () => switchSector('defense'));
+    btnOffense.addEventListener('click', () => switchSector('offense'));
+
+    if (window.location.hash === '#offense' || new URLSearchParams(window.location.search).get('sector') === 'offense') {
+        switchSector('offense');
+    }
+
+    window.addEventListener('message', (event) => {
+        if (event.data) {
+            if (event.data.action === 'switch_to_defense' || event.data.sector === 'defense') {
+                switchSector('defense');
+            } else if (event.data.action === 'switch_to_offense' || event.data.sector === 'offense') {
+                switchSector('offense');
+            }
+        }
+    });
+
+    window.switchSector = switchSector;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    initSectorSwitcher();
     window.AppController = new TuesdayApp();
 });
+

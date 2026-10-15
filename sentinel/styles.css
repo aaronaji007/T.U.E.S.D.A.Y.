@@ -1480,3 +1480,122 @@ body.matrix-theme {
         border-color: #cccccc !important;
     }
 }
+
+/* ==========================================================================
+   TACTICAL OPERATIONS SECTOR SWITCHER (DEFENSE vs OFFENSE)
+   ========================================================================== */
+
+.tactical-sector-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #060910;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.5rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.sector-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.sector-tab-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-dim, #94a3b8);
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 0.45rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sector-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #f8fafc;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.sector-tab-btn.active.sector-defense {
+    background: rgba(0, 229, 153, 0.12);
+    border-color: rgba(0, 229, 153, 0.45);
+    color: #00E599;
+    box-shadow: 0 0 12px rgba(0, 229, 153, 0.15);
+}
+
+.sector-tab-btn.active.sector-offense {
+    background: rgba(244, 63, 94, 0.15);
+    border-color: rgba(244, 63, 94, 0.45);
+    color: #F43F5E;
+    box-shadow: 0 0 12px rgba(244, 63, 94, 0.2);
+}
+
+.sector-status-pill {
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.sector-status-pill.green {
+    background: rgba(0, 229, 153, 0.2);
+    color: #00E599;
+}
+
+.sector-status-pill.red {
+    background: rgba(244, 63, 94, 0.25);
+    color: #F43F5E;
+}
+
+.sector-telemetry {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.sector-tag {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.65rem;
+    color: #64748b;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.sector-view-defense {
+    width: 100%;
+    min-height: calc(100vh - 48px);
+}
+
+.sector-view-offense {
+    display: none;
+    width: 100%;
+    height: calc(100vh - 48px);
+}
+
+.sector-view-offense.active {
+    display: block;
+}
+
+.redteam-frame {
+    width: 100%;
+    height: calc(100vh - 48px);
+    border: none;
+    background: #06080D;
+}

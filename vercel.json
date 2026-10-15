@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/redteam/(.*)", "destination": "/redteam/$1" },
+    { "source": "/redteam", "destination": "/redteam/index.html" },
+    { "source": "/(.*)", "destination": "/sentinel/$1" }
+  ]
+}

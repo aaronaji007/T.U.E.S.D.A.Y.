@@ -20,4 +20,6 @@ redteam/sandbox/
 *.env
 __pycache__/
 engine/__pycache__/
+api/__pycache__/
+*.pyc
 
