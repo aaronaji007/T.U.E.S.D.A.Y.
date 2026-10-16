@@ -80,10 +80,11 @@
                     </span>
                 </div>
                 <div class="tier-control-selector">
-                    <select id="select-inference-mode" class="machined-select" title="Switch between Full Cloud Hybrid, Air-Gap Local SLM, and Deterministic Rules">
-                        <option value="HYBRID">HYBRID: Cloud API ➔ Local SLM ➔ Rules</option>
-                        <option value="FULL_OFFLINE">FULL OFFLINE: Local SLM ➔ Rules (Air-Gap)</option>
-                        <option value="DETERMINISTIC_ONLY">AIR-GAP RULES: Pure On-Host Forensics (Zero AI)</option>
+                    <select id="select-inference-mode" class="machined-select" title="Switch between In-Browser Sovereign Swarm, Cloud Gemini API, and Air-Gap SLM">
+                        <option value="EXPO_SOVEREIGN" selected>⚡ EXPO SOVEREIGN (In-Browser Swarm — Zero Backend)</option>
+                        <option value="CLOUD_ONLINE">☁️ CLOUD ONLINE (Google Gemini API via Vercel)</option>
+                        <option value="HYBRID">HYBRID: Cloud API ➔ Local SLM ➔ Sovereign</option>
+                        <option value="FULL_OFFLINE">FULL OFFLINE: Local SLM ➔ Air-Gap Rules</option>
                     </select>
                 </div>
             </div>

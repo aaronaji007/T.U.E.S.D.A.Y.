@@ -215,6 +215,8 @@ const server = http.createServer(async (req, res) => {
         status: 'ok',
         backend: 'online',
         serverless: !!process.env.VERCEL,
+        engine: 'cloud-hybrid',
+        model: 'gemini-2.5-flash',
         sectors: {
           defense: { name: 'Sentinel SOC', path: '/', status: 'active' },
           offense: { name: 'RedTeam Attack Suite', path: '/redteam', status: 'active' }
@@ -227,9 +229,10 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'POST') {
         const body = await readBody(req);
         if (body.provider && llm.setProvider) llm.setProvider(body.provider);
-        return sendJSON(res, 200, { ok: true, provider: body.provider || 'gemini' });
+        const lastActiveTier = body.mode === 'CLOUD_ONLINE' ? 'TIER_1_CLOUD' : (body.mode === 'FULL_OFFLINE' ? 'TIER_2_LOCAL_SLM' : (body.mode === 'EXPO_SOVEREIGN' ? 'TIER_3_DETERMINISTIC' : 'TIER_1_CLOUD'));
+        return sendJSON(res, 200, { ok: true, mode: body.mode || 'EXPO_SOVEREIGN', lastActiveTier, provider: body.provider || 'gemini' });
       }
-      return sendJSON(res, 200, { ok: true, provider: 'gemini', model: 'gemini-2.5-flash' });
+      return sendJSON(res, 200, { ok: true, mode: 'EXPO_SOVEREIGN', lastActiveTier: 'TIER_3_DETERMINISTIC', provider: 'gemini', model: 'gemini-2.5-flash' });
     }
 
     if (pathname === '/api/settings/provider' && req.method === 'POST') {

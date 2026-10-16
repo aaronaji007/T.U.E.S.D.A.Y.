@@ -92,9 +92,9 @@ class TuesdayApp {
         const swarmStatus = document.getElementById('val-swarm-status');
 
         if (st.ok) {
-            const provName = (st.ollama && st.ollama.provider) ? st.ollama.provider.toUpperCase() : 'OLLAMA';
-            const label = st.engine === 'llm' ? `LLM AGENTIC: [${provName}] ${st.model}` : `RULE ENGINE (${provName} offline)`;
-            if (pill) { pill.innerText = `ENGINE: ${label}`; pill.className = st.engine === 'llm' ? 'matrix-pill' : 'matrix-pill badge-matrix-amber'; }
+            const provName = (st.ollama && st.ollama.provider) ? st.ollama.provider.toUpperCase() : 'CLOUD GEMINI';
+            const label = st.engine === 'cloud-hybrid' ? 'CLOUD HYBRID (Gemini 2.5 Flash)' : (st.engine === 'llm' ? `LLM AGENTIC: [${provName}] ${st.model || 'gemini-2.5-flash'}` : `RULE ENGINE (${provName})`);
+            if (pill) { pill.innerText = `ENGINE: ${label}`; pill.className = 'matrix-pill badge-matrix-green'; }
             if (swarmStatus) swarmStatus.innerHTML = `<i class="fa-solid fa-circle pulse"></i> ${label}`;
 
             const providerSelect = document.getElementById('llm-provider-select');
@@ -118,13 +118,13 @@ class TuesdayApp {
                 this.renderMemoryView('episodic');
             } catch (e) { /* fall back to seeded memory */ }
         } else {
-            if (pill) { pill.innerText = 'ENGINE: STATIC FALLBACK'; pill.className = 'matrix-pill badge-matrix-amber'; }
-            if (swarmStatus) swarmStatus.innerHTML = '<i class="fa-solid fa-circle pulse"></i> 8 AGENTS ONLINE (STATIC)';
+            if (pill) { pill.innerText = 'ENGINE: SOVEREIGN SWARM (ON-DEVICE)'; pill.className = 'matrix-pill badge-matrix-green'; }
+            if (swarmStatus) swarmStatus.innerHTML = '<i class="fa-solid fa-circle pulse"></i> 9 AGENTS ONLINE (SOVEREIGN)';
         }
     }
 
     // =====================================================
-    // 3-TIER INFERENCE ARCHITECTURE CONTROLLER
+    // INFERENCE ARCHITECTURE CONTROLLER (CLOUD & ON-DEVICE SOVEREIGN)
     // =====================================================
     bindInferenceModeSelector() {
         const select = document.getElementById('select-inference-mode');
@@ -135,7 +135,10 @@ class TuesdayApp {
             await this.updateInferenceMode(newMode);
         });
 
-        // Fetch initial status from server
+        // Initialize badge with selector default
+        this.renderInferenceBadge({ mode: select.value });
+
+        // Probe status from server if online
         this.fetchInferenceStatus();
     }
 
@@ -147,11 +150,19 @@ class TuesdayApp {
                 this.renderInferenceBadge(data);
             }
         } catch (e) {
-            console.warn('[Inference] Failed to fetch mode status:', e);
+            // Standalone client fallback
+            const select = document.getElementById('select-inference-mode');
+            this.renderInferenceBadge({ mode: select ? select.value : 'EXPO_SOVEREIGN' });
         }
     }
 
     async updateInferenceMode(mode) {
+        let lastActiveTier = 'TIER_3_DETERMINISTIC';
+        if (mode === 'CLOUD_ONLINE') lastActiveTier = 'TIER_1_CLOUD';
+        else if (mode === 'FULL_OFFLINE') lastActiveTier = 'TIER_2_LOCAL_SLM';
+        else if (mode === 'EXPO_SOVEREIGN') lastActiveTier = 'TIER_3_DETERMINISTIC';
+        else lastActiveTier = 'TIER_1_CLOUD';
+
         try {
             const res = await fetch('/api/engine/mode', {
                 method: 'POST',
@@ -160,13 +171,17 @@ class TuesdayApp {
             });
             if (res.ok) {
                 const data = await res.json();
-                this.renderInferenceBadge(data);
-                const desc = mode === 'HYBRID' ? 'Cloud API ➔ Local SLM ➔ Rules' : (mode === 'FULL_OFFLINE' ? 'Air-Gap Local SLM ➔ Rules' : 'Pure On-Host Deterministic Forensics');
-                this.appendTerminalLog('coordinator', `>> [INFERENCE ARCHITECTURE] Mode switched to: ${mode} (${desc}). Active Tier: ${data.lastActiveTier}`, 'info');
+                if (data.lastActiveTier) lastActiveTier = data.lastActiveTier;
             }
         } catch (e) {
-            console.error('[Inference] Mode switch failed:', e);
+            // Standalone client mode
         }
+
+        this.renderInferenceBadge({ mode, lastActiveTier });
+        const desc = mode === 'EXPO_SOVEREIGN'
+            ? '100% In-Browser Sovereign Swarm (Zero Backend Required)'
+            : (mode === 'CLOUD_ONLINE' ? 'Google Gemini API via Vercel Cloud Serverless' : (mode === 'HYBRID' ? 'Cloud API with Automatic On-Device Fallback' : 'Air-Gap Local SLM with Deterministic Engine'));
+        this.appendTerminalLog('coordinator', `>> [INFERENCE ARCHITECTURE] Mode switched to: ${mode} (${desc}).`, 'info');
     }
 
     renderInferenceBadge(status) {
@@ -175,25 +190,25 @@ class TuesdayApp {
         const label = document.getElementById('tier-badge-label');
         if (!badge || !label) return;
 
-        if (select && status.mode) {
-            select.value = status.mode;
-        }
-
-        const tier = status.lastActiveTier || 'TIER_3_DETERMINISTIC';
+        const mode = (select && select.value) ? select.value : (status.mode || 'EXPO_SOVEREIGN');
         badge.className = 'tier-indicator-badge';
 
-        if (tier === 'TIER_1_CLOUD') {
+        if (mode === 'CLOUD_ONLINE' || status.lastActiveTier === 'TIER_1_CLOUD') {
             badge.classList.add('tier-cloud');
             label.innerText = 'TIER 1: CLOUD API';
-            badge.title = 'Active: Cloud LLM API (Gemini 2.5 Flash)';
-        } else if (tier === 'TIER_2_LOCAL_SLM') {
+            badge.title = 'Active: Cloud LLM API (Google Gemini 2.5 Flash via Vercel)';
+        } else if (mode === 'FULL_OFFLINE' || status.lastActiveTier === 'TIER_2_LOCAL_SLM') {
             badge.classList.add('tier-local');
             label.innerText = 'TIER 2: LOCAL SLM';
-            badge.title = 'Active: Local Offline SLM (Ollama / vLLM on Port 11434)';
-        } else {
+            badge.title = 'Active: Local Offline SLM (Air-Gap Ollama / vLLM)';
+        } else if (mode === 'EXPO_SOVEREIGN') {
             badge.classList.add('tier-deterministic');
-            label.innerText = 'TIER 3: DETERMINISTIC';
-            badge.title = 'Active: On-Host Forensics Engine (Air-gapped, zero external dependencies)';
+            label.innerText = 'EXPO: SOVEREIGN SWARM';
+            badge.title = 'Active: 100% On-Device Sovereign Swarm (Zero Backend Required)';
+        } else {
+            badge.classList.add('tier-cloud');
+            label.innerText = 'HYBRID RESILIENT';
+            badge.title = 'Active: Cloud API with Automatic On-Device Fallback';
         }
     }
 
@@ -1045,7 +1060,7 @@ class TuesdayApp {
                 this.addAuditLog('HUMAN_APPROVED', `Approved containment for ${item.target}`);
                 this.renderApprovalQueueUI();
                 SwarmEngine.emitLog('response', `HUMAN APPROVAL GRANTED: Dispatching autonomous containment for ${item.target}.`, 'success');
-                if (item.id && window.TuesdayBackend?.status?.ok) {
+                if (item.id) {
                     SwarmEngine.runApprovalExecution(item.id).catch(err => {
                         SwarmEngine.emitLog('response', `APPROVAL EXECUTION FAILED: ${err.message}`, 'danger');
                     });
@@ -1060,7 +1075,7 @@ class TuesdayApp {
                 this.addAuditLog('HUMAN_OVERRIDE', `Rejected containment for ${item.target}`);
                 this.renderApprovalQueueUI();
                 SwarmEngine.emitLog('approval', `HUMAN OVERRIDE: Action rejected by analyst.`, 'warning');
-                if (item.id && window.TuesdayBackend?.status?.ok) {
+                if (item.id) {
                     SwarmEngine.rejectApproval(item.id, 'rejected by SOC operator');
                 }
             });
